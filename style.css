@@ -7,14 +7,13 @@
 }
 
 *{ box-sizing:border-box; }
-
 html, body{ height:100%; }
 
 body{
   margin:0;
   background:var(--bg);
   color:var(--text);
-  font:16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Arial, "Noto Sans", sans-serif;
+  font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial,"Noto Sans",sans-serif;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
 }
@@ -25,24 +24,27 @@ body{
   padding:0; border:0; height:1px; width:1px; overflow:hidden;
 }
 
-/* РћР±С‰РёР№ РєРѕРЅС‚РµР№РЅРµСЂ СЌРєСЂР°РЅР° */
+/* Общий контейнер экрана */
 .screen{
   min-height:100dvh;
   padding:24px;
   display:flex;
-  align-items:center;
+  align-items:flex-start;      /* чтобы контент шёл сверху */
   justify-content:center;
+  gap:16px;
+  flex-direction:column;
 }
 
-/* Р’РµСЂС‚РёРєР°Р»СЊРЅРѕРµ РјРµРЅСЋ */
+/* Вертикальное меню */
 .menu{
-  width:min(520px, 92vw);
+  width:min(520px,92vw);
   display:flex;
   flex-direction:column;
   gap:14px;
+  margin-bottom:16px;          /* отступ под меню */
 }
 
-/* РљРЅРѕРїРєРё */
+/* Кнопки */
 .btn{
   appearance:none;
   display:block;
@@ -56,43 +58,21 @@ body{
   font-size:18px;
   letter-spacing:0.3px;
   cursor:pointer;
-  transition:
-    transform .06s ease,
-    background .12s ease,
-    color .12s ease,
-    border-color .12s ease;
+  transition:transform .06s ease, background .12s ease, color .12s ease, border-color .12s ease;
   outline:none;
   user-select:none;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color:transparent;
 }
+.btn-primary{ background:var(--green); color:#002b12; border-color:var(--green); }
+.btn-secondary{ background:transparent; color:var(--green); border-color:var(--green); }
+.btn:active{ transform:translateY(1px) scale(0.995); }
+.btn-primary:active{ background:var(--green-pressed); border-color:var(--green-pressed); }
 
-.btn-primary{
-  background:var(--green);
-  color:#002b12;
-  border-color:var(--green);
-}
-
-.btn-secondary{
-  background:transparent;
-  color:var(--green);
-  border-color:var(--green);
-}
-
-.btn:active{
-  transform:translateY(1px) scale(0.995);
-}
-
-.btn-primary:active{
-  background:var(--green-pressed);
-  border-color:var(--green-pressed);
-}
-
-/* Р­РєСЂР°РЅ В«РћР± РёРіСЂРµВ» */
+/* Экран «Об игре» */
 .about{
-  width:min(640px, 92vw);
-  margin:0 auto;
+  width:min(640px,92vw);
+  margin:0;                    /* идёт сразу под меню */
 }
-
 .about__inner{
   display:flex;
   flex-direction:column;
@@ -100,46 +80,36 @@ body{
   padding:16px;
   border:1px solid #0e3b25;
   border-radius:12px;
-  background:rgba(12, 26, 18, 0.6);
+  background:rgba(12,26,18,.6);
 }
-
-.about h2{
-  margin:4px 0 0 0;
-  font-size:20px;
-}
-
-.about p{
-  margin:0 0 8px 0;
-  color:var(--muted);
-}
-
-/* РќРµР±РѕР»СЊС€РёРµ Р°РґР°РїС‚РёРІРЅС‹Рµ РїСЂР°РІРєРё */
-@media (min-width:768px){
-  .btn{ font-size:19px; padding:18px 20px; }
-}
+.about h2{ margin:4px 0 0 0; font-size:20px; }
+.about p{ margin:0 0 8px 0; color:var(--muted); }
 
 /* === TYPEWRITER (ABOUT) === */
 .type-line{
-  margin: 8px 0 12px 0;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 16px;
-  letter-spacing: 0.02em;
-  white-space: pre-wrap;   /* сохраняем пробелы/переносы */
-  min-height: 1.5em;       /* чтобы блок не прыгал в начале */
+  margin:8px 0 12px 0;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  font-size:16px;
+  letter-spacing:.02em;
+  white-space:pre-wrap;      /* сохраняем пробелы/переносы */
+  min-height:1.5em;
 }
 
 .type-cursor{
-  display: inline-block;
-  margin-left: 2px;
-  font-family: inherit;
-  font-size: 16px;
-  line-height: 1;
-  transform: translateY(2px); /* лёгкое выравнивание по базовой линии */
-  color: var(--green);
-  animation: blink 1s steps(1, end) infinite;
+  display:inline-block;
+  width:0.6ch;               /* ширина как у символа */
+  color:var(--green);
+  line-height:1;
+  animation:blink 1s steps(1,end) infinite;
+  vertical-align:-2px;       /* лёгкое выравнивание по базовой линии */
 }
 
 @keyframes blink{
-  0%, 50% { opacity: 1; }
-  50.01%, 100% { opacity: 0; }
+  0%,50%{opacity:1;}
+  50.01%,100%{opacity:0;}
+}
+
+/* Небольшие адаптивные правки */
+@media (min-width:768px){
+  .btn{ font-size:19px; padding:18px 20px; }
 }
