@@ -1,20 +1,36 @@
-<section id="menu" class="menu">
-  <button id="btn-play" class="btn btn-primary">Играть</button>
-  <button id="btn-about" class="btn btn-secondary">Об игре</button>
-</section>
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <title>Minirobots</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main id="app" class="screen">
+      <h1 class="visually-hidden">Minirobots</h1>
 
+      <!-- СЕКЦИЯ: MENU -->
+      <section id="menu" class="menu">
+        <button id="btn-play" class="btn btn-primary">Играть</button>
+        <button id="btn-about" class="btn btn-secondary">Об игре</button>
+      </section>
+      <!-- /СЕКЦИЯ: MENU -->
+
+<!-- СЕКЦИЯ: ABOUT -->
 <section id="about" class="about" hidden>
   <div class="about__inner">
     <h2>Об игре</h2>
-    <p>Здесь будет текст. Но позже.</p>
+    <p id="about-text" class="type-line" aria-live="polite"></p>
+    <span id="type-cursor" class="type-cursor" aria-hidden="true">_</span>
     <button id="btn-back" class="btn btn-secondary">Назад</button>
   </div>
 </section>
-</main>
+<!-- /СЕКЦИЯ: ABOUT -->
 
-<!-- Telegram SDK -->
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+    </main>
 
-<!-- Подключения с версиями для обхода кэша -->
-<link rel="stylesheet" href="./style.css?v=1">
-<script src="./app.js?v=1"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
