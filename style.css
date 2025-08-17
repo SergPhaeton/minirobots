@@ -1,1 +1,119 @@
+:root{
+  --bg:#000000;
+  --green:#19ff6a;
+  --green-pressed:#12cc54;
+  --text:#e6ffe6;
+  --muted:#99b39f;
+}
 
+*{ box-sizing:border-box; }
+
+html, body{ height:100%; }
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font:16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Arial, "Noto Sans", sans-serif;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+.visually-hidden{
+  position:absolute !important;
+  clip:rect(1px,1px,1px,1px);
+  padding:0; border:0; height:1px; width:1px; overflow:hidden;
+}
+
+/* Общий контейнер экрана */
+.screen{
+  min-height:100dvh;
+  padding:24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Вертикальное меню */
+.menu{
+  width:min(520px, 92vw);
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+/* Кнопки */
+.btn{
+  appearance:none;
+  display:block;
+  width:100%;
+  padding:16px 18px;
+  border-radius:12px;
+  border:2px solid var(--green);
+  background:transparent;
+  color:var(--green);
+  font-weight:700;
+  font-size:18px;
+  letter-spacing:0.3px;
+  cursor:pointer;
+  transition:
+    transform .06s ease,
+    background .12s ease,
+    color .12s ease,
+    border-color .12s ease;
+  outline:none;
+  user-select:none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-primary{
+  background:var(--green);
+  color:#002b12;
+  border-color:var(--green);
+}
+
+.btn-secondary{
+  background:transparent;
+  color:var(--green);
+  border-color:var(--green);
+}
+
+.btn:active{
+  transform:translateY(1px) scale(0.995);
+}
+
+.btn-primary:active{
+  background:var(--green-pressed);
+  border-color:var(--green-pressed);
+}
+
+/* Экран «Об игре» */
+.about{
+  width:min(640px, 92vw);
+  margin:0 auto;
+}
+
+.about__inner{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  padding:16px;
+  border:1px solid #0e3b25;
+  border-radius:12px;
+  background:rgba(12, 26, 18, 0.6);
+}
+
+.about h2{
+  margin:4px 0 0 0;
+  font-size:20px;
+}
+
+.about p{
+  margin:0 0 8px 0;
+  color:var(--muted);
+}
+
+/* Небольшие адаптивные правки */
+@media (min-width:768px){
+  .btn{ font-size:19px; padding:18px 20px; }
+}
