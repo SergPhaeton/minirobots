@@ -25,7 +25,7 @@ body{
   padding:0; border:0; height:1px; width:1px; overflow:hidden;
 }
 
-/* Общий контейнер экрана */
+/* РћР±С‰РёР№ РєРѕРЅС‚РµР№РЅРµСЂ СЌРєСЂР°РЅР° */
 .screen{
   min-height:100dvh;
   padding:24px;
@@ -34,7 +34,7 @@ body{
   justify-content:center;
 }
 
-/* Вертикальное меню */
+/* Р’РµСЂС‚РёРєР°Р»СЊРЅРѕРµ РјРµРЅСЋ */
 .menu{
   width:min(520px, 92vw);
   display:flex;
@@ -42,7 +42,7 @@ body{
   gap:14px;
 }
 
-/* Кнопки */
+/* РљРЅРѕРїРєРё */
 .btn{
   appearance:none;
   display:block;
@@ -87,7 +87,7 @@ body{
   border-color:var(--green-pressed);
 }
 
-/* Экран «Об игре» */
+/* Р­РєСЂР°РЅ В«РћР± РёРіСЂРµВ» */
 .about{
   width:min(640px, 92vw);
   margin:0 auto;
@@ -113,7 +113,33 @@ body{
   color:var(--muted);
 }
 
-/* Небольшие адаптивные правки */
+/* РќРµР±РѕР»СЊС€РёРµ Р°РґР°РїС‚РёРІРЅС‹Рµ РїСЂР°РІРєРё */
 @media (min-width:768px){
   .btn{ font-size:19px; padding:18px 20px; }
+}
+
+/* === TYPEWRITER (ABOUT) === */
+.type-line{
+  margin: 8px 0 12px 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  white-space: pre-wrap;   /* сохраняем пробелы/переносы */
+  min-height: 1.5em;       /* чтобы блок не прыгал в начале */
+}
+
+.type-cursor{
+  display: inline-block;
+  margin-left: 2px;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1;
+  transform: translateY(2px); /* лёгкое выравнивание по базовой линии */
+  color: var(--green);
+  animation: blink 1s steps(1, end) infinite;
+}
+
+@keyframes blink{
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
 }
