@@ -1,115 +1,213 @@
-:root{
-  --bg:#000000;
-  --green:#19ff6a;
-  --green-pressed:#12cc54;
-  --text:#e6ffe6;
-  --muted:#99b39f;
+﻿:root {
+  --bg: #162033;              /* Мягкий темно-синий фон */
+  --green: #57A773;           /* Спокойный зелёный с голубым оттенком */
+  --green-pressed: #469062;   /* Тёмный для нажатия */
+  --text: #E2E8F0;            /* Очень светлый, но не белый текст */
+  --muted: #99b39f;           /* Серо-зелёный для второстепенного текста */
 }
 
-*{ box-sizing:border-box; }
-html, body{ height:100%; }
-
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial,"Noto Sans",sans-serif;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
+* {
+  box-sizing: border-box;
 }
 
-.visually-hidden{
-  position:absolute !important;
-  clip:rect(1px,1px,1px,1px);
-  padding:0; border:0; height:1px; width:1px; overflow:hidden;
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Arial, "Noto Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 0;
+  border: 0;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
 }
 
 /* Общий контейнер экрана */
-.screen{
-  min-height:100dvh;
-  padding:24px;
-  display:flex;
-  align-items:flex-start;      /* чтобы контент шёл сверху */
-  justify-content:center;
-  gap:16px;
-  flex-direction:column;
+.screen {
+  min-height: 100dvh;
+  padding: 24px;
+  display: flex;
+  align-items: flex-start;       /* Контент сверху */
+  justify-content: center;
+  gap: 16px;
+  flex-direction: column;
 }
 
 /* Вертикальное меню */
-.menu{
-  width:min(520px,92vw);
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-  margin-bottom:16px;          /* отступ под меню */
+.menu {
+  width: min(520px, 92vw);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 16px;
 }
 
 /* Кнопки */
-.btn{
-  appearance:none;
-  display:block;
-  width:100%;
-  padding:16px 18px;
-  border-radius:12px;
-  border:2px solid var(--green);
-  background:transparent;
-  color:var(--green);
-  font-weight:700;
-  font-size:18px;
-  letter-spacing:0.3px;
-  cursor:pointer;
-  transition:transform .06s ease, background .12s ease, color .12s ease, border-color .12s ease;
-  outline:none;
-  user-select:none;
-  -webkit-tap-highlight-color:transparent;
+.btn {
+  appearance: none;
+  display: block;
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 2px solid var(--green);
+  background: transparent;
+  color: var(--green);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: transform 0.06s ease, background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+  outline: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
-.btn-primary{ background:var(--green); color:#002b12; border-color:var(--green); }
-.btn-secondary{ background:transparent; color:var(--green); border-color:var(--green); }
-.btn:active{ transform:translateY(1px) scale(0.995); }
-.btn-primary:active{ background:var(--green-pressed); border-color:var(--green-pressed); }
+
+.btn-primary {
+  background: var(--green);
+  color: #183834;
+  border-color: var(--green);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--green);
+  border-color: var(--green);
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.995);
+}
+
+.btn-primary:active {
+  background: var(--green-pressed);
+  border-color: var(--green-pressed);
+}
+
+/* Скрытие элементов по классу hidden */
+.hidden {
+  display: none !important;
+}
 
 /* Экран «Об игре» */
-.about{
-  width:min(640px,92vw);
-  margin:0;                    /* идёт сразу под меню */
-}
-.about__inner{
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-  padding:16px;
-  border:1px solid #0e3b25;
-  border-radius:12px;
-  background:rgba(12,26,18,.6);
-}
-.about h2{ margin:4px 0 0 0; font-size:20px; }
-.about p{ margin:0 0 8px 0; color:var(--muted); }
-
-/* === TYPEWRITER (ABOUT) === */
-.type-line{
-  margin:8px 0 12px 0;
-  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  font-size:16px;
-  letter-spacing:.02em;
-  white-space:pre-wrap;      /* сохраняем пробелы/переносы */
-  min-height:1.5em;
+.about {
+  width: min(640px, 92vw);
+  margin: 0;
 }
 
-.type-cursor{
-  display:inline-block;
-  width:0.6ch;               /* ширина как у символа */
-  color:var(--green);
-  line-height:1;
-  animation:blink 1s steps(1,end) infinite;
-  vertical-align:-2px;       /* лёгкое выравнивание по базовой линии */
+.about__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #468D77;
+  border-radius: 12px;
+  background: rgba(65, 120, 109, 0.12); /* светло-зелёный с прозрачностью */
 }
 
-@keyframes blink{
-  0%,50%{opacity:1;}
-  50.01%,100%{opacity:0;}
+/* Стили для всплывающего окна popup */
+#popup {
+  background: #eaf6f2; /* очень светлый зеленовато-голубой */
+  color: #204D45;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(36, 61, 20, 0.16);
+  margin-top: 24px;
+}
+
+#popup div {
+  color: #204D45;
+}
+
+#popup button.btn-primary {
+  background: var(--green);
+  color: #183834;
+  border-color: var(--green);
+}
+
+#popup button.btn-secondary {
+  background: transparent;
+  color: var(--green);
+  border-color: var(--green);
+}
+
+/* Полноэкранное всплывающее окно */
+.fullscreen-popup {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(22, 32, 51, 0.94);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 24px;
+}
+
+.fullscreen-popup.hidden {
+  display: none;
+}
+
+.popup-content {
+  background: #24443a;
+  border-radius: 16px;
+  max-width: 360px;
+  width: 100%;
+  padding: 20px;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.popup-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.popup-text {
+  font-size: 18px;
+  text-align: center;
+  white-space: pre-wrap;
+}
+
+/* TYPEWRITER (ABOUT) */
+.type-line {
+  margin: 8px 0 12px 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  white-space: pre-wrap;
+  min-height: 1.5em;
+}
+
+.type-cursor {
+  display: inline-block;
+  width: 0.6ch;
+  color: var(--green);
+  line-height: 1;
+  animation: blink 1s steps(1, end) infinite;
+  vertical-align: -2px;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
 }
 
 /* Небольшие адаптивные правки */
-@media (min-width:768px){
-  .btn{ font-size:19px; padding:18px 20px; }
+@media (min-width: 768px) {
+  .btn {
+    font-size: 19px;
+    padding: 18px 20px;
+  }
 }

@@ -1,4 +1,4 @@
-// == ИНИЦИАЛИЗАЦИЯ TELEGRAM (безопасно и вне Telegram) ==
+﻿// == ИНИЦИАЛИЗАЦИЯ TELEGRAM (безопасно и вне Telegram) ==
 (function initTMA(){
   try {
     if (window.Telegram && Telegram.WebApp) {

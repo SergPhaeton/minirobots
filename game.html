@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Minirobots: Игра</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <main id="game" class="screen">
+    <h1 class="visually-hidden">Minirobots: Игра</h1>
+    <div id="energy-status" style="font-size: 24px; margin-bottom: 20px;">
+      Зарядка: <span id="energy">0.0</span> ⚡
+    </div>
+    <button id="panel-btn" class="btn btn-primary">☀️ Солнечная панель — 1 шт.</button>
+    <div id="production-info" style="color: #555; margin-top: 8px; font-size: 18px;">
+      (Производство энергии: +<span id="production">0.32</span>⚡/сек)
+    </div>
+
+    <!-- Popup окно для покупки панели -->
+    <div id="popup" style="display: none; background: #fff; box-shadow: 0 2px 8px #0002; padding: 20px; border-radius: 10px; margin-top: 24px;">
+      <div>
+        Построить еще одну солнечную панель?<br>
+        Будет потрачено <span id="panel-cost">10</span> единиц энергии.<br>
+      </div>
+      <div style="margin-top: 12px; display: flex; justify-content: space-between;">
+        <button id="yes-btn" class="btn btn-primary">✅ Да</button>
+        <button id="no-btn" class="btn btn-secondary">❌ Нет</button>
+      </div>
+    </div>
+
+    <!-- Окно предупреждения о нехватке ресурсов -->
+    <div id="not-enough-resources" class="popup-warning hidden" role="alert" aria-live="assertive" style="margin-top: 24px;">
+      <div style="margin-bottom: 12px; font-weight: 700; color: #b02a37;">
+        Недостаточно ресурсов для покупки!
+      </div>
+      <button id="not-enough-ok" class="btn btn-primary" style="width: 100%;">ОК</button>
+    </div>
+  </main>
+
+  <!-- full screen popup -->
+  <div id="fullscreen-popup" class="fullscreen-popup hidden">
+    <div class="popup-content">
+      <img id="popup-image" src="" alt="popup image" />
+      <div id="popup-text" class="popup-text"></div>
+      <button id="popup-close" class="btn btn-primary">Закрыть</button>
+    </div>
+  </div>
+
+  <script src="./game.js"></script>
+</body>
+</html>
