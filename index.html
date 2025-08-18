@@ -9,26 +9,28 @@
   <body>
     <main id="app" class="screen">
       <h1 class="visually-hidden">Minirobots</h1>
-
       <!-- СЕКЦИЯ: MENU -->
       <section id="menu" class="menu">
         <button id="btn-play" class="btn btn-primary">Играть</button>
         <button id="btn-about" class="btn btn-secondary">Об игре</button>
+        <button id="btn-settings" class="btn btn-secondary">Настройки ⚙️</button>
+        <div id="reset-game" class="hidden" style="margin-top:12px;">
+  <p>Сбросить игру? Внимание! Весь игровой процесс будет уничтожен!</p>
+  <button id="btn-reset-yes" class="btn btn-primary">Да</button>
+  <button id="btn-reset-no" class="btn btn-secondary">Нет</button>
+</div>
       </section>
       <!-- /СЕКЦИЯ: MENU -->
 
-<!-- СЕКЦИЯ: ABOUT -->
-<section id="about" class="about" hidden>
-  <div class="about__inner">
-    <h2>Об игре</h2>
-    <p id="about-text" class="type-line" aria-live="polite"></p>
-<!-- удаляем отдельный <span id="type-cursor"> -->
-
-        <button id="btn-back" class="btn btn-secondary">Назад</button>
-  </div>
-</section>
-<!-- /СЕКЦИЯ: ABOUT -->
-
+      <!-- СЕКЦИЯ: ABOUT -->
+      <section id="about" class="about" hidden>
+        <div class="about__inner">
+          <h2>Об игре</h2>
+          <p id="about-text" class="type-line" aria-live="polite"></p>
+          <button id="btn-back" class="btn btn-secondary">Назад</button>
+        </div>
+      </section>
+      <!-- /СЕКЦИЯ: ABOUT -->
     </main>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
