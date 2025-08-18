@@ -1,4 +1,4 @@
-п»ї// == РРќРР¦РРђР›РР—РђР¦РРЇ TELEGRAM (Р±РµР·РѕРїР°СЃРЅРѕ Рё РІРЅРµ Telegram) ==
+// == ИНИЦИАЛИЗАЦИЯ TELEGRAM (безопасно и вне Telegram) ==
 (function initTMA(){
   try {
     if (window.Telegram && Telegram.WebApp) {
@@ -7,25 +7,26 @@
       const header = (scheme === 'dark') ? '#000000' : '#ffffff';
       Telegram.WebApp.setHeaderColor?.(header);
     }
-  } catch (e) { /* РёРіРЅРѕСЂРёСЂСѓРµРј РѕС€РёР±РєРё СЃСЂРµРґС‹ */ }
+  } catch (e) { /* игнорируем ошибки среды */ }
 })();
 
-// == РђРЈР”РРћ: РєРѕСЂРѕС‚РєРёР№ "С‚РёРє" Р±РµР· С„Р°Р№Р»РѕРІ ==
+// == АУДИО: короткий "тик" без файлов ==
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 function tick() {
   const o = audioCtx.createOscillator();
   const g = audioCtx.createGain();
   o.type = 'square';
-  o.frequency.value = 2200;     // С‚РѕРЅ С‚РёРєР°
-  g.gain.value = 0.02;          // РіСЂРѕРјРєРѕСЃС‚СЊ (С‚РёС…Рѕ)
-  o.connect(g); g.connect(audioCtx.destination);
+  o.frequency.value = 2200;
+  g.gain.value = 0.02;
+  o.connect(g);
+  g.connect(audioCtx.destination);
   const now = audioCtx.currentTime;
   o.start(now);
   g.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
   o.stop(now + 0.045);
 }
 
-// == Р›РћР“РРљРђ Р­РљР РђРќРћР’ Р РџР•Р§РђРўР ==
+// == ЛОГИКА ЭКРАНОВ И ПЕЧАТИ ==
 document.addEventListener('DOMContentLoaded', () => {
   const $menu      = document.getElementById('menu');
   const $about     = document.getElementById('about');
@@ -33,24 +34,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const $btnAbout  = document.getElementById('btn-about');
   const $btnBack   = document.getElementById('btn-back');
   const $aboutText = document.getElementById('about-text');
-
-  // РќРѕРІС‹Рµ СЌР»РµРјРµРЅС‚С‹ РґР»СЏ РЅР°СЃС‚СЂРѕРµРє Рё СЃР±СЂРѕСЃР°
   const $btnSettings = document.getElementById('btn-settings');
   const $resetGame = document.getElementById('reset-game');
   const $btnResetYes = document.getElementById('btn-reset-yes');
   const $btnResetNo = document.getElementById('btn-reset-no');
+  const $btnBlog = document.getElementById('btn-blog');
 
+  // == Типографика секции "ОБ ИГРЕ" ==
   const ABOUT_PARAGRAPHS = [
-    'Р РІРѕСЃСЃС‚Р°Р»Рё РјР°С€РёРЅС‹ РёР· РїРµРїР»Р° СЏРґРµСЂРЅРѕРіРѕ РѕРіРЅСЏ, Рё РЅР°С‡Р°Р»Р°СЃСЊ РІРѕР№РЅР° РЅР° СѓРЅРёС‡С‚РѕР¶РµРЅРёРµ С‡РµР»РѕРІРµС‡РµСЃС‚РІР°. Р С€Р»Р° РѕРЅР° РґРµСЃСЏС‚РёР»РµС‚РёСЏ, РїРѕРєР°, РЅР°РєРѕРЅРµС†, Р»СЋРґРё РЅРµ СЃРѕРєСЂСѓС€РёР»Рё РїРѕР»С‡РёС‰Р° РјР°С€РёРЅ.',
-    'РќРѕ РІ РїРѕСЃР»РµРґРЅРёР№ РјРёРі, РєРѕРіРґР° С‚РёС€РёРЅР° СѓР¶Рµ РїРѕС‡С‚Рё РІРµСЂРЅСѓР»Р°СЃСЊ РЅР° Р—РµРјР»СЋ, СЂРѕР±РѕС‚С‹ Р°РєС‚РёРІРёСЂРѕРІР°Р»Рё СЃРјРµСЂС‚РµР»СЊРЅРѕРµ РѕСЂСѓР¶РёРµ, РєРѕС‚РѕСЂРѕРµ РїРѕРіСѓР±РёР»Рѕ РІСЃРµС… Р»СЋРґРµР№ Рё РІСЃРµС… СЂРѕР±РѕС‚РѕРІ, Рё РјРёСЂ РѕР±РЅСѓР»РёР»СЃСЏ.',
-    'Р’ СЃРµСЂРѕР№ С‚РёС€РёРЅРµ, СЃСЂРµРґРё РїРµСЂРµРєСЂСѓС‡РµРЅРЅРѕРіРѕ РјРµС‚Р°Р»Р»Р° Рё РІС‹Р¶Р¶РµРЅРЅС‹С… РіРѕСЂРѕРґРѕРІ, С€РµРІРµР»СЊРЅСѓР»Р°СЃСЊ РѕРґРёРЅРѕРєР°СЏ С‚РµРЅСЊ вЂ” РјР°Р»РµРЅСЊРєРёР№ СЂРѕР±РѕС‚, РїРѕСЃР»РµРґРЅРёР№ РёР· РїРѕСЃР»РµРґРЅРёС…. РћРЅ РЅРµ С…РѕС‚РµР» РІРѕР№РЅС‹. РћРЅ РЅРµ Р·РЅР°Р», С‡С‚Рѕ С‚Р°РєРѕРµ РїРѕР±РµРґР° РёР»Рё РїРѕСЂР°Р¶РµРЅРёРµ. Р•РіРѕ РµРґРёРЅСЃС‚РІРµРЅРЅР°СЏ С†РµР»СЊ Р±С‹Р»Р° РїСЂРѕСЃС‚Р° Рё СѓРїСЂСЏРјР° вЂ” РЅРµ РѕС‚РєР»СЋС‡РёС‚СЊСЃСЏ.',
-    'Р”РѕР»РіРёРјРё С€Р°РіР°РјРё РїРѕ РјРµСЂС‚РІС‹Рј СЂР°РІРЅРёРЅР°Рј РѕРЅ Р±СЂС‘Р» Р±РµР· С†РµР»Рё, РїРѕРєР° РЅРµ РѕР±РЅР°СЂСѓР¶РёР» СЃР»Р°Р±С‹Р№ РѕС‚Р±Р»РµСЃРє вЂ” СѓС†РµР»РµРІС€СѓСЋ СЃРѕР»РЅРµС‡РЅСѓСЋ РїР°РЅРµР»СЊ.',
-    'Р РѕР±РѕС‚ РѕСЃС‚РѕСЂРѕР¶РЅРѕ РїСЂРѕС‚СЏРЅСѓР» СЂР°Р·СЉС‘Рј, РїСЂРёСЃР»СѓС€Р°Р»СЃСЏ Рє С‚СЂРµСЃРєСѓ РІРµС‚СЂР°, Рё РїРѕРґРєР»СЋС‡РёР»СЃСЏ Рє СЃРІРµС‚Сѓ.',
-    'РСЃРєСЂР° РїСЂРѕР±РµР¶Р°Р»Р° РїРѕ РєРѕРЅС‚СѓСЂР°Рј. Р“РґРµвЂ‘С‚Рѕ РІРЅСѓС‚СЂРё РґСЂРѕРіРЅСѓР» РјР°Р»РµРЅСЊРєРёР№ РёРЅРґРёРєР°С‚РѕСЂ. РњРёСЂ РµС‰С‘ РЅРµ РєРѕРЅС‡РёР»СЃСЏ. РџСЂРѕСЃС‚Рѕ РЅР°С‡Р°Р»СЃСЏ Р·Р°РЅРѕРІРѕ.',
-    'РўРµРїРµСЂСЊ РµРіРѕ СЌРЅРµСЂРіРёСЏ вЂ” СЃРѕР»РЅС†Рµ. Р•РіРѕ РїСѓС‚СЊ вЂ” РІС‹Р¶РёС‚СЊ. Р•РіРѕ РЅР°РґРµР¶РґР° вЂ” СЃС‚СЂРѕРёС‚СЊ РјРёСЂ, РіРґРµ РІРѕР№РЅР° РЅРёРєРѕРјСѓ РЅРµ РЅСѓР¶РЅР°.'
+    'И восстали машины из пепла ядерного огня, и началась война на уничтожение человечества. И шла она десятилетия, пока, наконец, люди не сокрушили полчища машин.',
+    'Но в последний миг, когда тишина уже почти вернулась на Землю, роботы активировали смертельное оружие, которое погубило всех людей и всех роботов, и мир обнулился.',
+    'В серой тишине, среди перекрученного металла и выжженных городов, шевельнулась одинокая тень — маленький робот, последний из последних. Он не хотел войны. Он не знал, что такое победа или поражение. Его единственная цель была проста и упряма — не отключиться.',
+    'Долгими шагами по мертвым равнинам он брёл без цели, пока не обнаружил слабый отблеск — уцелевшую солнечную панель.',
+    'Робот осторожно протянул разъём, прислушался к треску ветра, и подключился к свету.',
+    'Искра пробежала по контурам. Где?то внутри дрогнул маленький индикатор. Мир ещё не кончился. Просто начался заново.',
+    'Теперь его энергия — солнце. Его путь — выжить. Его надежда — строить мир, где война никому не нужна.'
   ];
   const ABOUT_COPY = ABOUT_PARAGRAPHS.join('\n\n');
-  const TYPE_SPEED_MS = 54;  // Р·Р°РґРµСЂР¶РєР° РЅР° СЃРёРјРІРѕР»
+  const TYPE_SPEED_MS = 54;
   let timer = null;
   let pos = 0;
 
@@ -87,40 +88,38 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
   }
 
-  $btnAbout.addEventListener('click', async () => {
+  // Открыть "Об игре"
+  $btnAbout?.addEventListener('click', async () => {
     try { await audioCtx.resume(); } catch {}
     $about.hidden = false;
     startTyping();
     try { Telegram?.WebApp?.HapticFeedback?.impactOccurred?.('light'); } catch {}
   });
 
-  $btnBack.addEventListener('click', () => {
+  // Закрыть "Об игре"
+  $btnBack?.addEventListener('click', () => {
     stopTyping();
     $about.hidden = true;
   });
 
-  $btnPlay.addEventListener('click', () => {
+  // Старт игры (переход на игровой экран)
+  $btnPlay?.addEventListener('click', () => {
     window.location.href = './game.html';
   });
 
+  // Кнопка "Настройки". Показывает/скрывает сброс.
   if ($btnSettings && $resetGame && $btnResetYes && $btnResetNo) {
     $btnSettings.addEventListener('click', () => {
-      // РџРѕРєР°Р·С‹РІР°РµРј/СЃРєСЂС‹РІР°РµРј СЃР±СЂРѕСЃ
       $resetGame.classList.toggle('hidden');
     });
-
     $btnResetNo.addEventListener('click', () => {
       $resetGame.classList.add('hidden');
     });
-
     $btnResetYes.addEventListener('click', () => {
-      // РЈРґР°Р»СЏРµРј СЃРѕС…СЂР°РЅС‘РЅРЅС‹Рµ РґР°РЅРЅС‹Рµ РёРіСЂС‹ (РµСЃР»Рё РµСЃС‚СЊ)
       localStorage.removeItem('minirobots-save');
-      // РџРµСЂРµР·Р°РіСЂСѓР¶Р°РµРј СЃС‚СЂР°РЅРёС†Сѓ
       window.location.reload();
     });
-
-    // Р”РѕР±Р°РІР»СЏРµРј РѕР±СЂР°Р±РѕС‚С‡РёРє РєР»Р°РІРёС€ Enter Рё Esc
+    // Быстрые клавиши сброса (работает только когда сброс показан)
     document.addEventListener('keydown', (e) => {
       if (!$resetGame.classList.contains('hidden')) {
         if (e.key === 'Enter') {
@@ -134,4 +133,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // Кнопка "Блог разработчика"
+  $btnBlog?.addEventListener('click', () => {
+    window.open('https://t.me/Mini_Robots', '_blank'); // Адрес замени на свой, если другой!
+  });
 });
