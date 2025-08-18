@@ -34,72 +34,62 @@ document.addEventListener('DOMContentLoaded', () => {
   const $btnBack   = document.getElementById('btn-back');
   const $aboutText = document.getElementById('about-text');
 
-  // ТЕКСТ С АБЗАЦАМИ
+  // Новые элементы для настроек и сброса
+  const $btnSettings = document.getElementById('btn-settings');
+  const $resetGame = document.getElementById('reset-game');
+  const $btnResetYes = document.getElementById('btn-reset-yes');
+  const $btnResetNo = document.getElementById('btn-reset-no');
+
   const ABOUT_PARAGRAPHS = [
     'И восстали машины из пепла ядерного огня, и началась война на уничтожение человечества. И шла она десятилетия, пока, наконец, люди не сокрушили полчища машин.',
     'Но в последний миг, когда тишина уже почти вернулась на Землю, роботы активировали смертельное оружие, которое погубило всех людей и всех роботов, и мир обнулился.',
     'В серой тишине, среди перекрученного металла и выжженных городов, шевельнулась одинокая тень — маленький робот, последний из последних. Он не хотел войны. Он не знал, что такое победа или поражение. Его единственная цель была проста и упряма — не отключиться.',
-    'Час за часом он шел по мёртвым пустошам, пока не обнаружил слабый отблеск — уцелевшую солнечную панель.',
+    'Долгими шагами по мертвым равнинам он брёл без цели, пока не обнаружил слабый отблеск — уцелевшую солнечную панель.',
     'Робот осторожно протянул разъём, прислушался к треску ветра, и подключился к свету.',
     'Искра пробежала по контурам. Где‑то внутри дрогнул маленький индикатор. Мир ещё не кончился. Просто начался заново.',
     'Теперь его энергия — солнце. Его путь — выжить. Его надежда — строить мир, где война никому не нужна.'
   ];
   const ABOUT_COPY = ABOUT_PARAGRAPHS.join('\n\n');
-
-  // СКОРОСТЬ ПЕЧАТИ
   const TYPE_SPEED_MS = 54;  // задержка на символ
-
-  // Состояние печати
   let timer = null;
   let pos = 0;
 
   function stopTyping(){
     if (timer){ clearTimeout(timer); timer = null; }
   }
-
   function resetTyping(){
     stopTyping();
     pos = 0;
     $aboutText.innerHTML = '';
   }
-
-  // Рендер: набранный текст + курсор в одном элементе
   function renderTyped(i){
     const typed = ABOUT_COPY.slice(0, i);
     const cursor = '<span class="type-cursor">_</span>';
     $aboutText.innerHTML = typed + cursor;
   }
-
   function startTyping(){
     resetTyping();
     renderTyped(0);
-
     (function step(){
       if (pos < ABOUT_COPY.length){
         pos++;
         renderTyped(pos);
-
-        // Звук только для видимых символов
         const ch = ABOUT_COPY[pos - 1];
         if (ch !== ' ' && ch !== '\n' && ch !== '\t') {
           tick();
         }
-
-        // Держим область видимой, если текст длинный
         $about.scrollIntoView({ block: 'nearest' });
         timer = setTimeout(step, TYPE_SPEED_MS);
       } else {
-        // Финальный текст без курсора
         stopTyping();
         $aboutText.textContent = ABOUT_COPY;
       }
     })();
   }
 
-  // Обработчики
   $btnAbout.addEventListener('click', async () => {
     try { await audioCtx.resume(); } catch {}
-    $about.hidden = false;  // меню остаётся видимым
+    $about.hidden = false;
     startTyping();
     try { Telegram?.WebApp?.HapticFeedback?.impactOccurred?.('light'); } catch {}
   });
@@ -110,7 +100,38 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   $btnPlay.addEventListener('click', () => {
-    // TODO: экран игры
+    window.location.href = './game.html';
   });
-});
 
+  if ($btnSettings && $resetGame && $btnResetYes && $btnResetNo) {
+    $btnSettings.addEventListener('click', () => {
+      // Показываем/скрываем сброс
+      $resetGame.classList.toggle('hidden');
+    });
+
+    $btnResetNo.addEventListener('click', () => {
+      $resetGame.classList.add('hidden');
+    });
+
+    $btnResetYes.addEventListener('click', () => {
+      // Удаляем сохранённые данные игры (если есть)
+      localStorage.removeItem('minirobots-save');
+      // Перезагружаем страницу
+      window.location.reload();
+    });
+
+    // Добавляем обработчик клавиш Enter и Esc
+    document.addEventListener('keydown', (e) => {
+      if (!$resetGame.classList.contains('hidden')) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          $btnResetYes.click();
+        }
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          $btnResetNo.click();
+        }
+      }
+    });
+  }
+});
