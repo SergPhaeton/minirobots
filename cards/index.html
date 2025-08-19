@@ -1,0 +1,40 @@
+﻿<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <title>Minirobots</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main id="app" class="screen">
+      <h1 class="visually-hidden">Minirobots</h1>
+      <!-- СЕКЦИЯ: MENU -->
+      <section id="menu" class="menu">
+        <button id="btn-play" class="btn btn-primary">🤖 Играть</button>
+        <button id="btn-about" class="btn btn-secondary">📖 Об игре</button>
+        <button id="btn-settings" class="btn btn-secondary">⚙️ Настройки</button>
+	<button id="btn-blog" class="btn btn-secondary">📕 Блог разработчика</button>
+        <div id="reset-game" class="hidden" style="margin-top:12px;">
+  <p>Сбросить игру? Внимание! Весь игровой процесс будет уничтожен!</p>
+  <button id="btn-reset-yes" class="btn btn-primary">Да</button>
+  <button id="btn-reset-no" class="btn btn-secondary">Нет</button>
+</div>
+      </section>
+      <!-- /СЕКЦИЯ: MENU -->
+
+      <!-- СЕКЦИЯ: ABOUT -->
+      <section id="about" class="about" hidden>
+        <div class="about__inner">
+          <h2>Об игре</h2>
+          <p id="about-text" class="type-line" aria-live="polite"></p>
+          <button id="btn-back" class="btn btn-secondary">Назад</button>
+        </div>
+      </section>
+      <!-- /СЕКЦИЯ: ABOUT -->
+    </main>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
