@@ -1,15 +1,13 @@
 ﻿:root {
-  --bg: #162033;              /* Мягкий темно-синий фон */
-  --green: #57A773;           /* Спокойный зелёный с голубым оттенком */
-  --green-pressed: #469062;   /* Тёмный для нажатия */
-  --text: #E2E8F0;            /* Очень светлый, но не белый текст */
-  --muted: #99b39f;           /* Серо-зелёный для второстепенного текста */
+  --bg: #162033;
+  --green: #57A773;
+  --green-pressed: #469062;
+  --text: #E2E8F0;
+  --muted: #99b39f;
 }
-
 * {
   box-sizing: border-box;
 }
-
 html, body {
   height: 100%;
   margin: 0;
@@ -19,7 +17,6 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
 .visually-hidden {
   position: absolute !important;
   clip: rect(1px, 1px, 1px, 1px);
@@ -29,18 +26,16 @@ html, body {
   width: 1px;
   overflow: hidden;
 }
-
 /* Общий контейнер экрана */
 .screen {
   min-height: 100dvh;
   padding: 24px;
   display: flex;
-  align-items: flex-start;       /* Контент сверху */
+  align-items: flex-start;
   justify-content: center;
   gap: 16px;
   flex-direction: column;
 }
-
 /* Вертикальное меню */
 .menu {
   width: min(520px, 92vw);
@@ -49,7 +44,6 @@ html, body {
   gap: 14px;
   margin-bottom: 16px;
 }
-
 /* Кнопки */
 .btn {
   appearance: none;
@@ -69,39 +63,32 @@ html, body {
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
-
 .btn-primary {
   background: var(--green);
   color: #183834;
   border-color: var(--green);
 }
-
 .btn-secondary {
   background: transparent;
   color: var(--green);
   border-color: var(--green);
 }
-
 .btn:active {
   transform: translateY(1px) scale(0.995);
 }
-
 .btn-primary:active {
   background: var(--green-pressed);
   border-color: var(--green-pressed);
 }
-
-/* Скрытие элементов по классу hidden */
+/* Скрытие */
 .hidden {
   display: none !important;
 }
-
-/* Экран «Об игре» */
+/* Экран “Об игре” */
 .about {
   width: min(640px, 92vw);
   margin: 0;
 }
-
 .about__inner {
   display: flex;
   flex-direction: column;
@@ -109,36 +96,31 @@ html, body {
   padding: 16px;
   border: 1px solid #468D77;
   border-radius: 12px;
-  background: rgba(65, 120, 109, 0.12); /* светло-зелёный с прозрачностью */
+  background: rgba(65, 120, 109, 0.12);
 }
-
-/* Стили для всплывающего окна popup */
+/* Стили для Popup */
 #popup {
-  background: #eaf6f2; /* очень светлый зеленовато-голубой */
+  background: #eaf6f2;
   color: #204D45;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(36, 61, 20, 0.16);
   margin-top: 24px;
 }
-
 #popup div {
   color: #204D45;
 }
-
 #popup button.btn-primary {
   background: var(--green);
   color: #183834;
   border-color: var(--green);
 }
-
 #popup button.btn-secondary {
   background: transparent;
   color: var(--green);
   border-color: var(--green);
 }
-
-/* Полноэкранное всплывающее окно */
+/* Полноэкранное Popup */
 .fullscreen-popup {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -149,11 +131,9 @@ html, body {
   z-index: 9999;
   padding: 24px;
 }
-
 .fullscreen-popup.hidden {
   display: none;
 }
-
 .popup-content {
   background: #24443a;
   border-radius: 16px;
@@ -166,21 +146,18 @@ html, body {
   align-items: center;
   gap: 16px;
 }
-
 .popup-content img {
   max-width: 100%;
   height: auto;
   border-radius: 12px;
   object-fit: cover;
 }
-
 .popup-text {
   font-size: 18px;
   text-align: center;
   white-space: pre-wrap;
 }
-
-/* TYPEWRITER (ABOUT) */
+/* Typewriter (About) */
 .type-line {
   margin: 8px 0 12px 0;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -189,7 +166,6 @@ html, body {
   white-space: pre-wrap;
   min-height: 1.5em;
 }
-
 .type-cursor {
   display: inline-block;
   width: 0.6ch;
@@ -198,16 +174,99 @@ html, body {
   animation: blink 1s steps(1, end) infinite;
   vertical-align: -2px;
 }
-
 @keyframes blink {
   0%, 50% { opacity: 1; }
   50.01%, 100% { opacity: 0; }
 }
 
+/* ----------- MINI‑BOT ассистент ----------- */
+.mini-bot {
+  position: fixed;
+  bottom: 22px;
+  right: 24px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  z-index: 1500;
+  display: none; /* СКРЫТ ПО УМОЛЧАНИЮ! */
+}
+/* Бот теперь БОЛЬШЕ — 120x120px */
+.mini-bot img,
+.mini-bot-avatar {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+  background: #304d3e;
+  border: 3px solid var(--green);
+  flex-shrink: 0;
+  display: block;
+  margin-left: 16px; /* отступит от пузырька */
+}
+.mini-bot-bubble {
+  background: #fffbe6;
+  color: #273033;
+  border: 2px solid #ffd700;
+  border-radius: 20px;
+  padding: 20px 28px;
+  margin-left: 0;
+  font-size: 1.22em;
+  max-width: 300px;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.13);
+  position: relative;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  word-break: break-word;
+}
+/* Хвостик пузыря теперь справа (к ботику) */
+.mini-bot-bubble::after {
+  content: '';
+  position: absolute;
+  right: -22px;
+  bottom: 32px;
+  width: 0;
+  height: 0;
+  border-top: 14px solid transparent;
+  border-bottom: 14px solid transparent;
+  border-left: 22px solid #fffbe6;
+  filter: drop-shadow(1px 0 3px #ffd70066);
+}
+
+/* Адаптив для bot на маленьких экранах */
+@media (max-width: 650px) {
+  .mini-bot {
+    right: 8px;
+    bottom: 10px;
+  }
+  .mini-bot-bubble {
+    max-width: 150px;
+    font-size: 0.95em;
+    padding: 8px 12px;
+  }
+}
 /* Небольшие адаптивные правки */
 @media (min-width: 768px) {
   .btn {
     font-size: 19px;
     padding: 18px 20px;
+  }
+}.achievement-top-btn {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  font-size: 1.25em;
+  padding: 20px 38px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.20);
+}
+@media (max-width: 600px) {
+  .achievement-top-btn {
+    font-size: 1em;
+    padding: 12px 14px;
+    border-radius: 13px;
   }
 }

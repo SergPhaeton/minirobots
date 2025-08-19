@@ -120,9 +120,11 @@ document.addEventListener('DOMContentLoaded', () => {
       $resetGame.classList.add('hidden');
     });
     $btnResetYes.addEventListener('click', () => {
-      localStorage.removeItem('minirobots-save');
-      window.location.reload();
-    });
+  localStorage.removeItem('minirobots-save');
+  localStorage.removeItem('botSaidHello'); // Сброс ассистента!
+  window.location.reload();
+});
+
     // Быстрые клавиши сброса (работает только когда сброс показан)
     document.addEventListener('keydown', (e) => {
       if (!$resetGame.classList.contains('hidden')) {

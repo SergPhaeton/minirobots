@@ -4,9 +4,12 @@
   <meta charset="UTF-8" />
   <title>Minirobots: Игра</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- КНОПКА ДОСТИЖЕНИЯ — САМЫЙ ВЕРХ СТРАНИЦЫ -->
+  <button id="show-achievement" class="btn btn-primary hidden achievement-top-btn">🏆 Достижение!</button>
+
   <main id="game" class="screen">
     <h1 class="visually-hidden">Minirobots: Игра</h1>
     <div id="energy-status" style="font-size: 24px; margin-bottom: 20px;">
@@ -20,15 +23,15 @@
     <!-- Popup окно для покупки панели -->
     <div id="popup" style="display: none; background: #fff; box-shadow: 0 2px 8px #0002; padding: 20px; border-radius: 10px; margin-top: 24px;">
       <div>
-        Построить еще одну солнечную панель? <br> Будет потрачено <span id="panel-cost">10</span> единиц энергии.<br> <br> Одна солнечная панель даёт +0.32⚡/сек<br>
-        
+        Построить еще одну солнечную панель? <br>
+        Будет потрачено <span id="panel-cost">10</span> единиц энергии.<br><br>
+        Одна солнечная панель даёт +0.32⚡/сек<br>
       </div>
       <div style="margin-top: 12px; display: flex; justify-content: space-between;">
         <button id="yes-btn" class="btn btn-primary">✅ Да</button>
         <button id="no-btn" class="btn btn-secondary">❌ Нет</button>
       </div>
     </div>
-
     <!-- Окно предупреждения о нехватке ресурсов -->
     <div id="not-enough-resources" class="popup-warning hidden" role="alert" aria-live="assertive" style="margin-top: 24px;">
       <div style="margin-bottom: 12px; font-weight: 700; color: #b02a37;">
@@ -38,7 +41,13 @@
     </div>
   </main>
 
-  <!-- full screen popup -->
+  <!-- Ассистент-бот -->
+  <div class="mini-bot">
+    <div class="mini-bot-bubble" id="botBubble"></div>
+    <img src="images/assistant/assistant.png" alt="Бот-ассистент" class="mini-bot-avatar"/>
+  </div>
+
+  <!-- Опциональный fullscreen popup -->
   <div id="fullscreen-popup" class="fullscreen-popup hidden">
     <div class="popup-content">
       <img id="popup-image" src="" alt="popup image" />
@@ -47,6 +56,15 @@
     </div>
   </div>
 
-  <script src="./game.js"></script>
+  <!-- МОДАЛКА ДОСТИЖЕНИЯ -->
+  <div id="achievement-modal" class="fullscreen-popup hidden">
+    <div class="popup-content">
+      <img id="achievement-img" src="images/cards/001.jpg" alt="Достижение" style="max-width:100%;border-radius:16px;">
+      <button id="achievement-ok" class="btn btn-primary" style="margin-top:16px;">ОК</button>
+    </div>
+  </div>
+
+  <!-- Подключаем JS -->
+  <script src="game.js"></script>
 </body>
 </html>
