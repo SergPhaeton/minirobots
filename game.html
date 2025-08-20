@@ -1,70 +1,64 @@
 ﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Minirobots: Игра</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- КНОПКА ДОСТИЖЕНИЯ — САМЫЙ ВЕРХ СТРАНИЦЫ -->
-  <button id="show-achievement" class="btn btn-primary hidden achievement-top-btn">🏆 Достижение!</button>
-
-  <main id="game" class="screen">
-    <h1 class="visually-hidden">Minirobots: Игра</h1>
-    <div id="energy-status" style="font-size: 24px; margin-bottom: 20px;">
-      Зарядка: <span id="energy">0.0</span> ⚡
-    </div>
-    <button id="panel-btn" class="btn btn-primary">☀️ Солнечная панель — 1 шт.</button>
-    <div id="production-info" style="color: #555; margin-top: 8px; font-size: 18px;">
-      (Производство энергии: +<span id="production">0.32</span>⚡/сек)
-    </div>
-
-    <!-- Popup окно для покупки панели -->
-    <div id="popup" style="display: none; background: #fff; box-shadow: 0 2px 8px #0002; padding: 20px; border-radius: 10px; margin-top: 24px;">
-      <div>
-        Построить еще одну солнечную панель? <br>
-        Будет потрачено <span id="panel-cost">10</span> единиц энергии.<br><br>
-        Одна солнечная панель даёт +0.32⚡/сек<br>
-      </div>
-      <div style="margin-top: 12px; display: flex; justify-content: space-between;">
-        <button id="yes-btn" class="btn btn-primary">✅ Да</button>
-        <button id="no-btn" class="btn btn-secondary">❌ Нет</button>
+  <div id="game" class="screen">
+    <!-- Достижение -->
+    <button id="show-achievement" class="achievement-top-btn hidden">🏆</button>
+    <div id="achievement-modal" class="fullscreen-popup hidden">
+      <div class="popup-content">
+        <img id="achievement-img" src="images/cards/001.jpg" alt="Achievement">
+        <button id="achievement-ok" class="btn btn-primary">ОК</button>
       </div>
     </div>
-    <!-- Окно предупреждения о нехватке ресурсов -->
-    <div id="not-enough-resources" class="popup-warning hidden" role="alert" aria-live="assertive" style="margin-top: 24px;">
-      <div style="margin-bottom: 12px; font-weight: 700; color: #b02a37;">
-        Недостаточно ресурсов для покупки!
+
+    <!-- Ресурсы -->
+    <div class="resources">
+      <div>⚡ Зарядка: <span id="energy">0.0</span></div>
+      <div id="trees-container">🌳 Дерево: <span id="trees-count">0</span></div>
+      <div id="robots-container">🤖 Роботы: <span id="robots-count">0</span> / <span id="max-robots">0</span></div>
+    </div>
+
+    <!-- Прогресс-бар производства роботов -->
+    <div id="robot-progress-container" class="hidden" style="margin:16px 0; padding:16px; background:rgba(65,120,109,0.12); border:1px solid #468D77; border-radius:12px;">
+      <div style="margin-bottom:8px;">Производим новых роботов:</div>
+      <div style="width:100%; background:#24443a; border-radius:8px; overflow:hidden; height:16px;">
+        <div id="robot-progress-bar" style="width:0%; height:100%; background:var(--green); transition:width 0.1s linear;"></div>
       </div>
-      <button id="not-enough-ok" class="btn btn-primary" style="width: 100%;">ОК</button>
     </div>
-  </main>
 
-  <!-- Ассистент-бот -->
-  <div class="mini-bot">
-    <div class="mini-bot-bubble" id="botBubble"></div>
-    <img src="images/assistant/assistant.png" alt="Бот-ассистент" class="mini-bot-avatar"/>
-  </div>
-
-  <!-- Опциональный fullscreen popup -->
-  <div id="fullscreen-popup" class="fullscreen-popup hidden">
-    <div class="popup-content">
-      <img id="popup-image" src="" alt="popup image" />
-      <div id="popup-text" class="popup-text"></div>
-      <button id="popup-close" class="btn btn-primary">Закрыть</button>
+    <!-- Производство энергии -->
+    <div style="margin:16px 0;">
+      Производство: <span id="production">0.32</span> ⚡/сек
     </div>
-  </div>
 
-  <!-- МОДАЛКА ДОСТИЖЕНИЯ -->
-  <div id="achievement-modal" class="fullscreen-popup hidden">
-    <div class="popup-content">
-      <img id="achievement-img" src="images/cards/001.jpg" alt="Достижение" style="max-width:100%;border-radius:16px;">
-      <button id="achievement-ok" class="btn btn-primary" style="margin-top:16px;">ОК</button>
+    <!-- Кнопки действий -->
+    <div class="actions">
+      <button id="panel-btn" class="btn btn-primary">☀️ Солнечная панель — <span id="panels-count">1</span> шт.</button>
+      <div style="margin-top:8px; font-size:14px; color:var(--muted);">
+        Стоимость следующей: <span id="panel-cost">10</span> ⚡
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="tree-btn" class="btn btn-secondary">🪓 Рубить дерево (100⚡)</button>
+    </div>
+
+    <div class="actions">
+      <button id="charging-station-btn" class="btn btn-primary">🔋 Построить зарядную станцию (0)</button>
+    </div>
+
+    <!-- Mini-bot ассистент -->
+    <div class="mini-bot" style="display:none;">
+      <div class="mini-bot-bubble"><span id="botBubble">Добро пожаловать!</span></div>
+      <div class="mini-bot-avatar"></div>
     </div>
   </div>
 
-  <!-- Подключаем JS -->
   <script src="game.js"></script>
 </body>
 </html>
