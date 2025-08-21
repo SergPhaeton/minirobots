@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // === ПАРАМЕТРЫ ИГРЫ ===
 const maxEnergy = 5000;
-const panelProduction = 0.315;
+const panelProduction = 0.63;
 const priceRatio = 1.12;
 const basePanelCost = 10;
 const baseStationCost = 5;
@@ -78,10 +78,10 @@ const assistantMessages = [
     ]
   },
   {
-    id: 'energy-0.2',
-    threshold: { energy: 0.2 },
+    id: 'energy-200',
+    threshold: { energy: 200 },
     text: [
-      'Тест возможности того, как работает очередь сообщений.'
+      'Рубите дерево. Это позволит строить зарядные станции для новых роботов. Сделаете из них дровосеков и больше не придется это делать самому. '
     ]
   },
   {
@@ -109,7 +109,7 @@ const assistantMessages = [
     id: 'panels-2',
     threshold: { panels: 2 },
     text: [
-      'Каждая солнечная панель дает ⚡ 0.32/сек. Продолжайте их строить и увидите как растет скорость зарядки.'
+      'Каждая солнечная панель дает ⚡ 0.63/сек. Продолжайте их строить и увидите как растет скорость зарядки.'
     ]
   }
 ];
