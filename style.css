@@ -61,7 +61,7 @@ html, body {
   border: 2px solid var(--green);
   background: transparent;
   color: var(--green);
-  font-weight: 700;
+  font-weight: 300;
   font-size: 18px;
   letter-spacing: 0.3px;
   cursor: pointer;

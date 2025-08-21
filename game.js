@@ -99,6 +99,34 @@ text: [
 ]
 },
 {
+id: 'trees-2',
+threshold: { trees: 2 },
+text: [
+'По достижению третьего дерева я расскау о новых возможностях. Вокруг валяются сломанные и поврежденные роботы - наши собратья. Их можно восстановить, но их придется заряжать.'
+]
+},
+{
+id: 'trees-1',
+threshold: { trees: 1 },
+text: [
+'Первое дерево 🌳 отправляется на склад. У вас хорошо получается!'
+]
+},
+{
+id: 'chargingStations-1',
+threshold: { chargingStations: 1 },
+text: [
+'Вы построили зарядную станцию. Деревянная площадка с крышей, куда роботы могут встать, укрывшись от непогоды и подключиться к зарядке. ВНИМАНИЕ! Каждый робот потребляет 4⚡ в секунду. Если роботам не хватит энергии, они отключатся и их сознание сотрется навсегда. Не позволяйте роботам уйти в забвение, они теряют свою личность и начинают жить с нуля'
+]
+},
+{
+id: 'robots-1',
+threshold: { robots: 1 },
+text: [
+'Вы собрали из обломков своего первого робота. Он будет помогать вам и служить во благо новой цивилизации. Одна зарядная станция позволяет разместить только двух роботов. И, как я уже говорил, каждый будет потреблять 4⚡ в сек. Если энергия кончится - роботы отключатся и сознание их будет уничтожено.'
+]
+},
+{
 id: 'energy-100',
 threshold: { energy: 100 },
 text: [
@@ -244,21 +272,30 @@ lastUpdate = data.lastUpdate || Date.now();
 }
 
 // === ОБНОВЛЕНИЕ UI ===
+// === ОБНОВЛЕНИЕ UI ===
 function updateUI() {
-// Энергия и производство
-if (energyTextElem) {
-const cur = Math.floor(energy);
-const prod = (panels * panelProduction).toFixed(2);
-energyTextElem.innerHTML =
-`${cur}` +
-` / ${maxEnergy} (${prod}/сек)`;
-} else {
-// Резерв для старой разметки, если вдруг понадобится
-energyElem.textContent = energy.toFixed(1);
-productionElem.textContent = (panels * panelProduction).toFixed(2);
-}
+    // Энергия и производство
+    if (energyTextElem) {
+        const cur = Math.floor(energy);
+        const totalProduction = panels * panelProduction; // Общее производство панелей
+        const robotConsumption = robots * 4; // Потребление роботов (4 энергии/сек на робота)
+        const netProduction = totalProduction - robotConsumption; // Чистое производство
+        
+        energyTextElem.innerHTML =
+            `${cur}` +
+            ` / ${maxEnergy} (${netProduction.toFixed(2)}/сек)`;
+    } else {
+        // Резерв для старой разметки, если вдруг понадобится
+        energyElem.textContent = energy.toFixed(1);
+        const totalProduction = panels * panelProduction;
+        const robotConsumption = robots * 4;
+        const netProduction = totalProduction - robotConsumption;
+        productionElem.textContent = netProduction.toFixed(2);
+    }
+    
+    treesCountElem.textContent = trees;
+    // ... остальной код функции остается без изменений
 
-treesCountElem.textContent = trees;
 // Панели
 panelsCountElem.textContent = panels;
 panelCostElem.textContent = getNextPanelCost();
@@ -297,46 +334,52 @@ robProgCont.classList.add('hidden');
 }
 
 // === ОСНОВНОЙ ЦИКЛ ===
+// === ОСНОВНОЙ ЦИКЛ ===
 function gameLoop() {
-const now = Date.now();
-const delta = (now - lastUpdate) / 1000;
-lastUpdate = now;
+    const now = Date.now();
+    const delta = (now - lastUpdate) / 1000;
+    lastUpdate = now;
+    
+    // Производство энергии панелями
+    const totalProduction = panels * panelProduction;
+    const robotConsumption = robots * 4; // 4 энергии/сек на каждого робота
+    const netEnergyChange = totalProduction - robotConsumption;
+    
+    if (energy < maxEnergy && netEnergyChange > 0) {
+        energy += netEnergyChange * delta;
+        if (energy > maxEnergy) energy = maxEnergy;
+    } else if (netEnergyChange < 0) {
+        // Если роботы потребляют больше, чем производят панели
+        energy += netEnergyChange * delta;
+        if (energy < 0) energy = 0;
+    }
 
-// Производство энергии панелями
-if (energy < maxEnergy) {
-energy += panels * panelProduction * delta;
-if (energy > maxEnergy) energy = maxEnergy;
+    // Сборка роботов (при наличии станций и свободного места)
+    if (chargingStations > 0 && robots < getMaxRobots()) {
+        robotProgress += delta / robotBuildTime;
+        if (robProgBar) {
+            robProgBar.style.width = `${Math.min(robotProgress, 1) * 100}%`;
+        }
+
+        if (robotProgress >= 1) {
+            robots++;
+            robotProgress = 0;
+            tick();
+        }
+    } else {
+        robotProgress = 0;
+        if (robProgBar) robProgBar.style.width = '0%';
+    }
+
+    // Убираем старый код потребления энергии роботами, так как он теперь учтен выше
+    
+    // Проверка помощника в основном цикле
+    checkAssistant();
+    updateUI();
+    saveGame();
+    requestAnimationFrame(gameLoop);
 }
 
-// Сборка роботов (при наличии станций и свободного места)
-if (chargingStations > 0 && robots < getMaxRobots()) {
-robotProgress += delta / robotBuildTime;
-
-if (robProgBar) {
-robProgBar.style.width = `${Math.min(robotProgress, 1) * 100}%`;
-}
-
-if (robotProgress >= 1) {
-robots++;
-robotProgress = 0;
-tick();
-}
-} else {
-robotProgress = 0;
-if (robProgBar) robProgBar.style.width = '0%';
-}
-
-// Потребление энергии роботами
-if (robots >= 1) {
-energy = Math.max(0, energy - robots * 2 * delta);
-}
-
-// Проверка помощника в основном цикле
-checkAssistant();
-updateUI();
-saveGame();
-requestAnimationFrame(gameLoop);
-}
 
 // === ОБРАБОТЧИКИ КНОПОК ===
 panelBtn.onclick = () => {
