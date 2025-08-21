@@ -1,4 +1,4 @@
-// == ИНИЦИАЛИЗАЦИЯ TELEGRAM ==
+﻿// == ИНИЦИАЛИЗАЦИЯ TELEGRAM ==
 (function initTMA() {
 try {
 if (window.Telegram && Telegram.WebApp) {
@@ -66,68 +66,119 @@ if (btnExit) {
 }
 
 
-// === ТЕКСТОВЫЙ ПОМОЩНИК ===
+// === ТЕКСТОВЫЙ ПОМОЩНИК + ОЧЕРЕДЬ ФРАЗ ===
 const assistantMessages = [
-  { 
-    id: 'energy-0.1', 
-    threshold: { energy: 0.1 }, 
+  {
+    id: 'energy-0.1',
+    threshold: { energy: 0.1 },
     text: [
       'Вы - последний уцелевший робот после апокалипсиса. Вы должны были погибнуть в огне, но случайно нашли солнечную панель',
       'Подключившись к ней вы смогли восстановить заряд. Сейчас нужно подождать, чтобы аккумулятор зарядился.',
       'Если построить вторую солнечную панель - зарядка пойдет быстрее.'
-    ] 
+    ]
   },
-  { 
-    id: 'energy-30', 
-    threshold: { energy: 30 }, 
+  {
+    id: 'energy-0.2',
+    threshold: { energy: 0.2 },
+    text: [
+      'Тест возможности того, как работает очередь сообщений.'
+    ]
+  },
+  {
+    id: 'energy-30',
+    threshold: { energy: 30 },
     text: [
       'Что я вижу? Дым рассеялся и стало видно, что рядом есть лес. Мы можем нарубить немного дерева, однако это затратно для твоей энергии. Дождись, когда зарядка достигнет 100 и ты сможешь получать древесину.'
-    ] 
+    ]
   },
-  { 
-    id: 'trees-1', 
-    threshold: { trees: 1 }, 
+  {
+    id: 'trees-1',
+    threshold: { trees: 1 },
     text: [
-      'Первое дерево 🌳 отправляется на склад. У вас хорошо получается! '
-    ] 
+      'Первое дерево 🌳 отправляется на склад. У вас хорошо получается!'
+    ]
   },
-  { 
-    id: 'energy-100', 
-    threshold: { energy: 100 }, 
+  {
+    id: 'energy-100',
+    threshold: { energy: 100 },
     text: [
-      'Вы накопили достаточно энергии, чтобы добывать древесину. Да, поначалу придется делать это руками, Соберите хотя бы 5 🌳 '
-    ] 
+      'Вы накопили достаточно энергии, чтобы добывать древесину. Да, поначалу придется делать это руками, Соберите хотя бы 5 🌳'
+    ]
   },
-  { 
-    id: 'panels-2', 
-    threshold: { panels: 2 }, 
+  {
+    id: 'panels-2',
+    threshold: { panels: 2 },
     text: [
-      'Каждая солнечная панель дает ⚡ 0.32/сек. Продолжайте их строить и увидите как растет скорость зарядки.',
-      
-    ] 
-  },
+      'Каждая солнечная панель дает ⚡ 0.32/сек. Продолжайте их строить и увидите как растет скорость зарядки.'
+    ]
+  }
 ];
 
-// Функция проверки и показа только одного нового сообщения
+// Очередь фраз помощника
+const assistantQueue = [];
+let assistantBusy = false;
+
+// Проверяем, нужно ли показать новое сообщение, и добавляем его в очередь
 function checkAssistant() {
   const shown = JSON.parse(localStorage.getItem('shownAssistant') || '[]');
   const ctx = { panels, trees, energy, chargingStations, robots };
-
   const nextMsg = assistantMessages.find(msg =>
     !shown.includes(msg.id) &&
     Object.entries(msg.threshold).every(([key, val]) => ctx[key] >= val)
   );
-
   if (nextMsg) {
     shown.push(nextMsg.id);
     localStorage.setItem('shownAssistant', JSON.stringify(shown));
-    showAssistant(nextMsg.text);
+    enqueueAssistant(nextMsg.text);
   }
 }
 
+// Добавить строки в очередь
+function enqueueAssistant(lines) {
+  if (!Array.isArray(lines)) return;
+  lines.forEach(line => assistantQueue.push(line));
+  if (!assistantBusy) processAssistantQueue();
+}
 
+// Обработка очереди: показываем фразы по одной
+async function processAssistantQueue() {
+  if (assistantBusy) return;
+  const nextLine = assistantQueue.shift();
+  if (nextLine === undefined) return;
+  assistantBusy = true;
+  try {
+    await new Promise(resolve => {
+      showAssistant([nextLine]);
+      const textElem = document.getElementById('assistant-text');
+      const observer = new MutationObserver((_, obs) => {
+        if (!textElem.textContent.endsWith('_')) {
+          obs.disconnect();
+          resolve();
+        }
+      });
+      observer.observe(textElem, { childList: true, characterData: true, subtree: true });
+    });
+  } finally {
+    assistantBusy = false;
+    if (assistantQueue.length > 0) {
+      processAssistantQueue();
+      // Для паузы 20с: replace above line with:
+      // setTimeout(processAssistantQueue, 20000);
+    }
+  }
+}
 
-// Функция печати текста построчно
+// Показываем одну строку через существующую функцию showAssistant
+function showAssistant(lines) {
+  const panel = document.getElementById('assistant-panel');
+  const text = document.getElementById('assistant-text');
+  panel.classList.remove('hidden');
+  typeAssistant(lines, text, 54, () => {
+    // оставляем панель видимой до следующей строки
+  });
+}
+
+// Оригинальная функция печати по строкам (оставляем без изменений)
 function typeAssistant(lines, elem, speed = 50, callback) {
   let i = 0;
   function nextLine() {
@@ -135,16 +186,14 @@ function typeAssistant(lines, elem, speed = 50, callback) {
       callback?.();
       return;
     }
-    let line = lines[i++];
+    const line = lines[i++] || '';
     let pos = 0;
     elem.textContent = '';
     function step() {
       if (pos <= line.length) {
         elem.textContent = line.slice(0, pos) + '_';
         const ch = line.charAt(pos - 1);
-        if (ch && ch !== ' ' && ch !== '\n' && ch !== '\t') {
-          tick();    // <-- пищит на буквы ассистента!
-        }
+        if (ch && ch !== ' ' && ch !== '\n' && ch !== '\t') tick();
         pos++;
         setTimeout(step, speed);
       } else {
@@ -155,18 +204,6 @@ function typeAssistant(lines, elem, speed = 50, callback) {
     step();
   }
   nextLine();
-}
-
-
-
-// Показ панели ассистента
-function showAssistant(lines) {
-const panel = document.getElementById('assistant-panel');
-const text = document.getElementById('assistant-text');
-panel.classList.remove('hidden');
-typeAssistant(lines, text, 54, () => {
-// по завершении печати оставляем панель видимой
-});
 }
 
 // === ФУНКЦИИ РАСЧЁТОВ ===
@@ -321,3 +358,4 @@ updateUI();
 gameLoop();
 
 });
+
