@@ -60,6 +60,7 @@ const robProgBar = document.getElementById('robot-progress-bar');
 const btnExit = document.getElementById('btn-exit');
 const energyTextElem = document.getElementById('energy-text');
 
+
 if (btnExit) {
   btnExit.onclick = () => {
     saveGame();                 // сохраняем текущий прогресс
@@ -249,13 +250,17 @@ lastUpdate = data.lastUpdate || Date.now();
 function updateUI() {
 // Энергия и производство
 if (energyTextElem) {
+  const cur = Math.floor(energy);
   const prod = (panels * panelProduction).toFixed(2);
-  energyTextElem.textContent = `${Math.floor(energy)} / ${maxEnergy} (${prod}/сек)`;
+  energyTextElem.innerHTML =
+    `<span class="resource-line"><span class="resource-lead">${cur}</span>` +
+    `<span class="resource-tail"> / ${maxEnergy} (${prod}/сек)</span></span>`;
 } else {
-  // fallback, если старый layout
+  // Резерв для старой разметки, если вдруг понадобится
   energyElem.textContent = energy.toFixed(1);
   productionElem.textContent = (panels * panelProduction).toFixed(2);
 }
+
 
 treesCountElem.textContent = trees;
 
