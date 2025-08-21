@@ -112,33 +112,35 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Кнопка "Настройки". Показывает/скрывает сброс.
-  if ($btnSettings && $resetGame && $btnResetYes && $btnResetNo) {
-    $btnSettings.addEventListener('click', () => {
-      $resetGame.classList.toggle('hidden');
-    });
-    $btnResetNo.addEventListener('click', () => {
-      $resetGame.classList.add('hidden');
-    });
-    $btnResetYes.addEventListener('click', () => {
-  localStorage.removeItem('minirobots-save');
-  localStorage.removeItem('botSaidHello'); // Сброс ассистента!
-  window.location.reload();
-});
+if ($btnSettings && $resetGame && $btnResetYes && $btnResetNo) {
+  $btnSettings.addEventListener('click', () => {
+    $resetGame.classList.toggle('hidden');
+  });
+  $btnResetNo.addEventListener('click', () => {
+    $resetGame.classList.add('hidden');
+  });
+  $btnResetYes.addEventListener('click', () => {
+    localStorage.removeItem('minirobots-save');
+    localStorage.removeItem('botSaidHello');    // Сброс ассистента!
+    localStorage.removeItem('shownAssistant');  // Сброс истории подсказок помощника!
+    window.location.reload();
+  });
 
-    // Быстрые клавиши сброса (работает только когда сброс показан)
-    document.addEventListener('keydown', (e) => {
-      if (!$resetGame.classList.contains('hidden')) {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          $btnResetYes.click();
-        }
-        if (e.key === 'Escape') {
-          e.preventDefault();
-          $btnResetNo.click();
-        }
+  // Быстрые клавиши сброса (работает только когда сброс показан)
+  document.addEventListener('keydown', (e) => {
+    if (!$resetGame.classList.contains('hidden')) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        $btnResetYes.click();
       }
-    });
-  }
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        $btnResetNo.click();
+      }
+    }
+  });
+}
+
 
   // Кнопка "Блог разработчика"
   $btnBlog?.addEventListener('click', () => {

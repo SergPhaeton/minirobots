@@ -6,6 +6,61 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Панель текстового помощника -->
+<div id="assistant-panel" class="hidden">
+  <img src="images/assistant/assistant.png" id="assistant-avatar" alt="Ассистент" />
+  <div id="assistant-text"></div>
+</div>
+
+<button id="btn-exit" style="
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px;
+  font-size: 1.1em;
+  background-color: #262;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 999;
+">
+  Сохранить и выйти
+</button>
+
+
+  <style>
+  #assistant-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(30, 30, 40, 0.9);
+  color: #52f45a;  /* <-- Эту строку изменить */
+  display: flex;
+  align-items: flex-start;
+  padding: 10px;
+  gap: 10px;
+  font-family: sans-serif;
+  z-index: 1000;
+}
+
+  #assistant-panel.hidden { display: none; }
+  #assistant-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+  #assistant-text {
+    flex: 1;
+    white-space: pre-wrap;
+    line-height: 1.4;
+    overflow-wrap: break-word;
+  }
+</style>
+
+
   <div id="game" class="screen">
     <!-- Достижение -->
     <button id="show-achievement" class="achievement-top-btn hidden">🏆</button>
@@ -18,7 +73,8 @@
     <!-- Ресурсы -->
     <div class="resources">
       <div>⚡ Зарядка: <span id="energy">0.0</span></div>
-      <div id="trees-container">🌳 Дерево: <span id="trees-count">0</span></div>
+     <div id="trees-container">🌳 Дерево: <span id="trees-count">0</span></div>
+
       <div id="robots-container">🤖 Роботы: <span id="robots-count">0</span> / <span id="max-robots">0</span></div>
     </div>
     <!-- Прогресс-бар производства роботов -->
@@ -33,15 +89,23 @@
       Производство: <span id="production">0.32</span> ⚡/сек
     </div>
     <!-- Кнопки действий -->
-    <div id="panel-container" class="resource-container">
-      <button id="panel-btn" class="btn btn-primary">
-        ☀️ Солнечная панель — <span id="panels-count">1</span> шт.<br>
-        <small>Стоимость следующей: <span id="panel-cost">10</span>⚡</small>
-      </button>
-    </div>
-    <div class="actions">
-      <button id="tree-btn" class="btn btn-secondary">🪓 Рубить дерево (100⚡)</button>
-    </div>
+<!-- Кнопки действий -->
+<div id="panel-container" class="resource-container">
+  <button id="panel-btn" class="btn btn-primary">
+    ☀️ Солнечная панель — <span id="panels-count">1</span> шт.<br>
+    <small>Стоимость следующей: <span id="panel-cost">10</span>⚡</small>
+  </button>
+</div>
+
+<!-- Новый контейнер для рубки дерева -->
+<div id="tree-container" class="resource-container">
+  <button id="tree-btn" class="btn btn-secondary">
+    🌳 Рубить дерево <br>
+    <small>Стоимость: 100⚡</small>
+  </button>
+</div>
+
+
     <div id="charging-station-container" style="display: none;">
       <button id="charging-station-btn" class="btn btn-primary">
         🔋 Построить зарядную станцию (<span id="stations-count">0</span>)<br>
