@@ -58,6 +58,8 @@ const maxRobotsElem = document.getElementById('max-robots');
 const robProgCont = document.getElementById('robot-progress-container');
 const robProgBar = document.getElementById('robot-progress-bar');
 const btnExit = document.getElementById('btn-exit');
+const energyTextElem = document.getElementById('energy-text');
+
 if (btnExit) {
   btnExit.onclick = () => {
     saveGame();                 // сохраняем текущий прогресс
@@ -246,9 +248,16 @@ lastUpdate = data.lastUpdate || Date.now();
 // === ОБНОВЛЕНИЕ UI ===
 function updateUI() {
 // Энергия и производство
-energyElem.textContent = energy.toFixed(1);
+if (energyTextElem) {
+  const prod = (panels * panelProduction).toFixed(2);
+  energyTextElem.textContent = `${Math.floor(energy)} / ${maxEnergy} (${prod}/сек)`;
+} else {
+  // fallback, если старый layout
+  energyElem.textContent = energy.toFixed(1);
+  productionElem.textContent = (panels * panelProduction).toFixed(2);
+}
+
 treesCountElem.textContent = trees;
-productionElem.textContent = (panels * panelProduction).toFixed(2);
 
 // Панели
 panelsCountElem.textContent = panels;
