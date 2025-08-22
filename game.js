@@ -11,14 +11,13 @@
 
 // == ЗВУКОВОЙ ТИК ==
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
 function tick() {
     const o = audioCtx.createOscillator();
     const g = audioCtx.createGain();
-    o.type = 'square'; 
+    o.type = 'square';
     o.frequency.value = 2200;
     g.gain.value = 0.02;
-    o.connect(g); 
+    o.connect(g);
     g.connect(audioCtx.destination);
     const now = audioCtx.currentTime;
     o.start(now);
@@ -43,6 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const BASE_STATION_COST = 5;
     const STATION_PRICE_RATIO = 2.5;
     const ROBOT_BUILD_TIME = 40;
+    const MAX_TREES = 200; // Максимальное количество дерева
+    const LUMBERJACK_PRODUCTION = 0.09; // Производство дерева на одного лесоруба в секунду
 
     // === ИГРОВЫЕ ПЕРЕМЕННЫЕ ===
     let energy = 0;
@@ -53,8 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let robotProgress = 0;
     let lastUpdate = Date.now();
     let treeButtonUnlocked = false; //разблокировка кнопки дерева
-    
-
+    let freeRobots = 0; // Свободные роботы (не назначенные на работу)
+    let lumberjackRobots = 0; // Роботы-лесорубы
 
     // === DOM ЭЛЕМЕНТЫ ===
     const energyTextElem = document.getElementById('energy-text');
@@ -94,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === ТЕКСТОВЫЙ ПОМОЩНИК ===
     const assistantMessages = [
-                {
+        {
             id: 'energy-0.1',
             threshold: { energy: 0.1 },
             text: ['Вы - последний уцелевший робот после апокалипсиса. Вы должны были погибнуть в огне, но случайно нашли солнечную панель. Подключившись к ней вы смогли восстановить заряд. Сейчас нужно подождать, чтобы аккумулятор зарядился. Нажмите на ☀️ солнце, чтобы построить вторую солнечную панель - зарядка пойдет быстрее.']
@@ -166,7 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
             !shown.includes(msg.id) &&
             Object.entries(msg.threshold).every(([key, val]) => ctx[key] >= val)
         );
-
         if (nextMsg) {
             shown.push(nextMsg.id);
             localStorage.setItem('shownAssistant', JSON.stringify(shown));
@@ -184,7 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (assistantBusy) return;
         const nextLine = assistantQueue.shift();
         if (nextLine === undefined) return;
-
         assistantBusy = true;
         try {
             await new Promise(resolve => {
@@ -261,20 +260,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // === СОХРАНЕНИЕ/ЗАГРУЗКА ===
-  function saveGame() {
-    const gameData = {
-        energy: energy,
-        panels: panels,
-        trees: trees,
-        chargingStations: chargingStations,
-        robots: robots,
-        robotProgress: robotProgress,
-        lastUpdate: Date.now(),
-        treeButtonUnlocked: treeButtonUnlocked // Добавляем сохранение состояния кнопки
-    };
-    localStorage.setItem('minirobots-save', JSON.stringify(gameData));
-}
-
+    function saveGame() {
+        const gameData = {
+            energy: energy,
+            panels: panels,
+            trees: trees,
+            chargingStations: chargingStations,
+            robots: robots,
+            robotProgress: robotProgress,
+            lastUpdate: Date.now(),
+            treeButtonUnlocked: treeButtonUnlocked,
+            freeRobots: freeRobots, // Добавляем сохранение свободных роботов
+            lumberjackRobots: lumberjackRobots // Добавляем сохранение лесорубов
+        };
+        localStorage.setItem('minirobots-save', JSON.stringify(gameData));
+    }
 
     function loadGame() {
         try {
@@ -288,19 +288,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 robots = 0;
                 robotProgress = 0;
                 lastUpdate = Date.now();
+                freeRobots = 0;
+                lumberjackRobots = 0;
                 return;
             }
 
             const data = JSON.parse(savedData);
             energy = data.energy || 0;
-panels = data.panels || 1;
-trees = data.trees || 0;
-chargingStations = data.chargingStations || 0;
-robots = data.robots || 0;
-robotProgress = data.robotProgress || 0;
-lastUpdate = data.lastUpdate || Date.now();
-treeButtonUnlocked = data.treeButtonUnlocked || false; // Загружаем состояние кнопки
+            panels = data.panels || 1;
+            trees = data.trees || 0;
+            chargingStations = data.chargingStations || 0;
+            robots = data.robots || 0;
+            robotProgress = data.robotProgress || 0;
+            lastUpdate = data.lastUpdate || Date.now();
+            treeButtonUnlocked = data.treeButtonUnlocked || false; // Загружаем состояние кнопки
+            freeRobots = data.freeRobots || 0;
+            lumberjackRobots = data.lumberjackRobots || 0;
 
+            // Миграция старых сохранений: все роботы становятся свободными
+            if (data.freeRobots === undefined && data.lumberjackRobots === undefined && robots > 0) {
+                freeRobots = robots;
+                lumberjackRobots = 0;
+            }
         } catch (e) {
             // В случае ошибки загрузки, устанавливаем начальные значения
             energy = 0;
@@ -311,6 +320,8 @@ treeButtonUnlocked = data.treeButtonUnlocked || false; // Загружаем с�
             robotProgress = 0;
             lastUpdate = Date.now();
             treeButtonUnlocked = false;
+            freeRobots = 0;
+            lumberjackRobots = 0;
         }
     }
 
@@ -325,44 +336,42 @@ treeButtonUnlocked = data.treeButtonUnlocked || false; // Загружаем с�
             energyTextElem.innerHTML = `${cur} / ${MAX_ENERGY} (${netProduction.toFixed(2)}/сек)`;
         }
 
-        // Деревья — показываем также прирост/сек
-if (treesCountElem) {
-    treesCountElem.textContent = trees;
-    // ВСТАВЬ элемент для прироста дерева (создать если нет в HTML)
-    let treeProduction = robots * 2.5; // измени формулу если нужно!
-    let treeProductionElem = document.getElementById('tree-production');
-    if (!treeProductionElem) {
-        // Создать span для прироста, если его нет
-        treeProductionElem = document.createElement('span');
-        treeProductionElem.id = 'tree-production';
-        treesCountElem.parentElement.appendChild(treeProductionElem);
-    }
-    treeProductionElem.textContent = ` (${treeProduction.toFixed(2)}/сек)`;
-}
-
+        // Деревья — показываем количество, максимум и прирост/сек
+        if (treesCountElem) {
+            const treeProduction = lumberjackRobots * LUMBERJACK_PRODUCTION;
+            treesCountElem.textContent = `${Math.floor(trees)} / ${MAX_TREES}`;
+            
+            let treeProductionElem = document.getElementById('tree-production');
+            if (!treeProductionElem) {
+                treeProductionElem = document.createElement('span');
+                treeProductionElem.id = 'tree-production';
+                treesCountElem.parentElement.appendChild(treeProductionElem);
+            }
+            treeProductionElem.textContent = ` (${treeProduction.toFixed(2)}/сек)`;
+        }
 
         // Панели
         if (panelsCountElem) {
             panelsCountElem.textContent = panels;
         }
+
         if (panelCostElem) {
             panelCostElem.textContent = getNextPanelCost();
         }
 
         // Кнопка навигации к роботам - показываем только если есть роботы
-const robotsNavContainer = document.getElementById('robots-nav-container');
-if (robotsNavContainer) {
-    robotsNavContainer.style.display = robots > 0 ? '' : 'none';
-}
+        const robotsNavContainer = document.getElementById('robots-nav-container');
+        if (robotsNavContainer) {
+            robotsNavContainer.style.display = robots > 0 ? '' : 'none';
+        }
 
         // Кнопка рубки дерева - показываем при энергии >= 30 и запоминаем это состояние
-if (treeBtn) {
-    if (energy >= 30) {
-        treeButtonUnlocked = true; // Разблокируем кнопку навсегда
-    }
-    treeBtn.style.display = treeButtonUnlocked ? '' : 'none';
-}
-
+        if (treeBtn) {
+            if (energy >= 30) {
+                treeButtonUnlocked = true; // Разблокируем кнопку навсегда
+            }
+            treeBtn.style.display = treeButtonUnlocked ? '' : 'none';
+        }
 
         // Контейнер зарядной станции - показываем ТОЛЬКО при деревьях >= 3
         const stationContainer = document.getElementById('charging-station-container');
@@ -375,6 +384,7 @@ if (treeBtn) {
         if (stationsCountSpan) {
             stationsCountSpan.textContent = chargingStations;
         }
+
         if (stationCostSpan) {
             stationCostSpan.textContent = getNextStationCost();
         }
@@ -383,11 +393,11 @@ if (treeBtn) {
         if (robotCont) {
             robotCont.style.display = robots > 0 ? '' : 'none';
         }
-       
 
         if (robotsCountElem) {
             robotsCountElem.textContent = Math.floor(robots);
         }
+
         if (maxRobotsElem) {
             maxRobotsElem.textContent = getMaxRobots();
         }
@@ -407,12 +417,11 @@ if (treeBtn) {
         const now = Date.now();
         const delta = (now - lastUpdate) / 1000;
         lastUpdate = now;
-
+        
         // Производство и потребление энергии
         const totalProduction = panels * PANEL_PRODUCTION;
         const robotConsumption = robots * 4;
         const netEnergyChange = totalProduction - robotConsumption;
-
         if (energy < MAX_ENERGY && netEnergyChange > 0) {
             energy += netEnergyChange * delta;
             if (energy > MAX_ENERGY) energy = MAX_ENERGY;
@@ -423,6 +432,12 @@ if (treeBtn) {
 
         // Проверка отключения роботов при нехватке энергии
         if (energy <= 0 && robots > 0) {
+            // Сначала отключаем лесорубов, потом свободных роботов
+            if (lumberjackRobots > 0) {
+                lumberjackRobots--;
+            } else if (freeRobots > 0) {
+                freeRobots--;
+            }
             robots--;
             robotProgress = 0;
             tick();
@@ -438,6 +453,7 @@ if (treeBtn) {
 
             if (robotProgress >= 1) {
                 robots++;
+                freeRobots++; // Новый робот становится свободным
                 robotProgress = 0;
                 tick();
             }
@@ -446,6 +462,13 @@ if (treeBtn) {
             if (robProgBar) {
                 robProgBar.style.width = '0%';
             }
+        }
+
+        // Производство дерева лесорубами
+        if (lumberjackRobots > 0 && trees < MAX_TREES) {
+            const treeGain = lumberjackRobots * LUMBERJACK_PRODUCTION * delta;
+            trees += treeGain;
+            if (trees > MAX_TREES) trees = MAX_TREES;
         }
 
         checkAssistant();
@@ -504,15 +527,13 @@ if (treeBtn) {
     }
 
     // Обработчик кнопки "Роботы" — переход на страницу robots.html
-const robotsNavBtn = document.getElementById('robots-nav-btn');
-if (robotsNavBtn) {
-    robotsNavBtn.onclick = () => {
-        saveGame(); // сохранить игру на всякий случай
-        window.location.href = 'robots.html';
-    };
-}
-
-
+    const robotsNavBtn = document.getElementById('robots-nav-btn');
+    if (robotsNavBtn) {
+        robotsNavBtn.onclick = () => {
+            saveGame(); // сохранить игру на всякий случай
+            window.location.href = 'robots.html';
+        };
+    }
 
     // === ЛОГИКА СНОСА ЗДАНИЙ ===
     const demolishMenu = document.getElementById('demolish-menu');
@@ -520,19 +541,18 @@ if (robotsNavBtn) {
     const demolishNoBtn = document.getElementById('demolish-no');
     let currentDemolishBtn = null;
 
-   function showDemolishMenu(triggerElem, buildingBtn) {
-    if (!demolishMenu) return;
-    const rect = triggerElem.getBoundingClientRect();
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-    demolishMenu.style.display = 'block';
-    demolishMenu.setAttribute('aria-hidden', 'false');
-    // Новый расчет left: правый край меню = левому краю кнопки
-    demolishMenu.style.left = (rect.left + scrollLeft - demolishMenu.offsetWidth) + 'px';
-    demolishMenu.style.top = (rect.bottom + scrollTop + 4) + 'px';
-    currentDemolishBtn = buildingBtn;
-}
-
+    function showDemolishMenu(triggerElem, buildingBtn) {
+        if (!demolishMenu) return;
+        const rect = triggerElem.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        demolishMenu.style.display = 'block';
+        demolishMenu.setAttribute('aria-hidden', 'false');
+        // Новый расчет left: правый край меню = левому краю кнопки
+        demolishMenu.style.left = (rect.left + scrollLeft - demolishMenu.offsetWidth) + 'px';
+        demolishMenu.style.top = (rect.bottom + scrollTop + 4) + 'px';
+        currentDemolishBtn = buildingBtn;
+    }
 
     function hideDemolishMenu() {
         if (!demolishMenu) return;
@@ -578,12 +598,18 @@ if (robotsNavBtn) {
                 case 'charging-station-btn':
                     if (chargingStations > 0) {
                         chargingStations--;
-                        robots = Math.max(0, robots - 2);
+                        // При сносе станции роботы исчезают пропорционально
+                        const removedRobots = Math.min(2, robots);
+                        const removedFree = Math.min(removedRobots, freeRobots);
+                        const removedLumberjacks = removedRobots - removedFree;
+                        
+                        freeRobots -= removedFree;
+                        lumberjackRobots -= removedLumberjacks;
+                        robots = Math.max(0, robots - removedRobots);
                         updateUI();
                     }
                     break;
             }
-
             hideDemolishMenu();
             saveGame();
         });

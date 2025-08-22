@@ -1,43 +1,41 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Роботы</title>
-  <!-- Путь должен совпадать с расположением style.css -->
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 Роботы</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<div class="screen">
-
-  <div style="text-align: center; margin-bottom: 20px;">
-    <h2 style="margin: 0; font-size: 1.8em;">🤖 Роботы</h2>
-    <div style="font-size: 1.1em; margin-top: 8px;">
-      Свободных роботов: <span id="freeRobots" style="color: #57A773; font-weight: bold;">0</span>
-    </div>
-  </div>
-
-  <div class="menu">
-
-    <!-- Лесоруб -->
-    <div class="btn btn-primary" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px;">
-      <div style="flex: 1;">
-        <div style="font-size: 1.1em; font-weight: 600;">🪓 Лесоруб</div>
-        <div style="font-size: 0.9em; opacity: 0.8;">Добывает: +0.09 🌳/сек</div>
-        <div style="font-size: 0.9em; opacity: 0.8;">Работает: <span id="energyWorkers">0</span> роботов</div>
-      </div>
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <button class="job-btn job-minus" data-job="energy" style="background: #469062; border: none; color: white; width: 40px; height: 40px; border-radius: 8px; font-size: 1.4em; cursor: pointer;">–</button>
-        <button class="job-btn job-plus" data-job="energy" style="background: #57A773; border: none; color: white; width: 40px; height: 40px; border-radius: 8px; font-size: 1.4em; cursor: pointer;">+</button>
-      </div>
+<div class="container">
+    <h1>🤖 Роботы</h1>
+    
+    <div style="font-size: 1.2em; margin: 20px 0;">
+        Свободных роботов: <span id="free-robots-count">0</span>
     </div>
 
-   
+    <div class="menu">
+        <!-- Лесоруб -->
+        <div class="btn btn-primary" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px;">
+            <div style="flex: 1;">
+                <div style="font-size: 1.1em; font-weight: 600;">🪓 Лесоруб</div>
+                <div style="font-size: 0.9em; opacity: 0.8;">Добывает: +0.09 🌳/сек</div>
+                <div style="font-size: 0.9em; opacity: 0.8;">
+                    Работает: <span id="lumberjack-count">0</span> роботов
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button id="lumberjack-minus" style="background: #469062; border: none; color: white; width: 40px; height: 40px; border-radius: 8px; font-size: 1.4em; cursor: pointer;">–</button>
+                <button id="lumberjack-plus" style="background: #57A773; border: none; color: white; width: 40px; height: 40px; border-radius: 8px; font-size: 1.4em; cursor: pointer;">+</button>
+            </div>
+        </div>
     </div>
 
-  </div>
-
+    <div style="margin-top: 20px;">
+        <a href="game.html" class="btn btn-secondary">← Назад к игре</a>
+    </div>
 </div>
 
+<script src="robots.js"></script>
 </body>
 </html>
