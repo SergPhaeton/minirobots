@@ -1,0 +1,159 @@
+<!DOCTYPE html> <html lang="ru"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>🧬 Лаборатория - MiniRobots</title> <style> body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #1a1a2e, #16213e); color: white; min-height: 100vh; }
+
+    .header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .header h1 {
+        color: #00d4ff;
+        margin: 0;
+    }
+    
+    .knowledge-info {
+        background: rgba(255,255,255,0.1);
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .knowledge-bar {
+        background: rgba(0,0,0,0.3);
+        border-radius: 10px;
+        height: 20px;
+        margin: 10px 0;
+        overflow: hidden;
+    }
+    
+    .knowledge-fill {
+        background: linear-gradient(90deg, #00ff88, #00cc66);
+        height: 100%;
+        border-radius: 10px;
+        transition: width 0.3s ease;
+    }
+    
+    .scientists-section {
+        background: rgba(255,255,255,0.1);
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .scientist-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background: rgba(0,0,0,0.2);
+        border-radius: 10px;
+        margin: 10px 0;
+    }
+    
+    .scientist-info {
+        flex-grow: 1;
+    }
+    
+    .scientist-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .btn {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    
+    .btn-plus {
+        background: #00ff88;
+        color: black;
+    }
+    
+    .btn-minus {
+        background: #ff4444;
+        color: white;
+    }
+    
+    .btn:hover {
+        opacity: 0.8;
+    }
+    
+    .back-btn {
+        background: #4a90e2;
+        color: white;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 20px;
+        width: 100%;
+    }
+    
+    .back-btn:hover {
+        background: #357abd;
+    }
+    
+    .stats-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 10px 0;
+    }
+</style>
+
+</head> <body> <div class="header"> <h1>🧬 Лаборатория</h1> </div>
+
+<div class="knowledge-info">
+    <h2>📚 Знания</h2>
+    <div class="stats-row">
+        <span>Текущие знания:</span>
+        <span id="current-knowledge">0</span>
+    </div>
+    <div class="stats-row">
+        <span>Максимум:</span>
+        <span id="max-knowledge">0</span>
+    </div>
+    <div class="stats-row">
+        <span>Производство:</span>
+        <span id="knowledge-production">+0.00/сек</span>
+    </div>
+    <div class="knowledge-bar">
+        <div class="knowledge-fill" id="knowledge-fill"></div>
+    </div>
+</div>
+
+<div class="scientists-section">
+    <h2>👨‍🔬 Управление учёными</h2>
+    <div class="stats-row">
+        <span>Свободных роботов:</span>
+        <span id="free-robots-count">0</span>
+    </div>
+    <div class="stats-row">
+        <span>Доступно слотов учёных:</span>
+        <span id="scientist-slots">0</span>
+    </div>
+    
+    <div class="scientist-row">
+        <div class="scientist-info">
+            <strong>👨‍🔬 Учёный</strong><br>
+            <small>Производит: +0.175 📚/сек</small><br>
+            <small>Работает: <span id="scientist-count">0</span> роботов</small>
+        </div>
+        <div class="scientist-controls">
+            <button class="btn btn-plus" id="scientist-plus">+</button>
+            <button class="btn btn-minus" id="scientist-minus">−</button>
+        </div>
+    </div>
+</div>
+
+<button class="back-btn" onclick="window.location.href='game.html'">↩️ Назад к игре</button>
+
+<script src="laboratory.js"></script>
+</body> </html>
+

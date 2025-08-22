@@ -27,9 +27,7 @@ function tick() {
 
 // == ФУНКЦИЯ ПОЛНОГО СБРОСА ИГРЫ ==
 function resetGame() {
-    // Полная очистка всех данных localStorage
     localStorage.clear();
-    // Немедленная перезагрузка страницы
     window.location.reload(true);
 }
 
@@ -42,8 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const BASE_STATION_COST = 5;
     const STATION_PRICE_RATIO = 2.5;
     const ROBOT_BUILD_TIME = 40;
-    const MAX_TREES = 200; // Максимальное количество дерева
-    const LUMBERJACK_PRODUCTION = 0.09; // Производство дерева на одного лесоруба в секунду
+    const MAX_TREES = 200;
+    const LUMBERJACK_PRODUCTION = 0.09;
+    const SCIENTIST_PRODUCTION = 0.175;
+    const LAB_COST_BASE = 25;
+    const LAB_COST_RATIO = 1.15;
+    const LAB_KNOWLEDGE_BONUS = 0.10;
+    const FIRST_LAB_CAPACITY = 500;
+    const ADDITIONAL_LAB_CAPACITY = 250;
 
     // === ИГРОВЫЕ ПЕРЕМЕННЫЕ ===
     let energy = 0;
@@ -53,9 +57,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let robots = 0;
     let robotProgress = 0;
     let lastUpdate = Date.now();
-    let treeButtonUnlocked = false; //разблокировка кнопки дерева
-    let freeRobots = 0; // Свободные роботы (не назначенные на работу)
-    let lumberjackRobots = 0; // Роботы-лесорубы
+    let treeButtonUnlocked = false;
+    let freeRobots = 0;
+    let lumberjackRobots = 0;
+    let laboratories = 0;
+    let knowledge = 0;
+    let maxKnowledge = 0;
+    let scientistRobots = 0;
 
     // === DOM ЭЛЕМЕНТЫ ===
     const energyTextElem = document.getElementById('energy-text');
@@ -70,6 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const robProgCont = document.getElementById('robot-progress-container');
     const robProgBar = document.getElementById('robot-progress-bar');
     const btnExit = document.getElementById('btn-exit');
+    const knowledgeDisplay = document.getElementById('knowledge-display');
+    const knowledgeText = document.getElementById('knowledge-text');
 
     // === ОБРАБОТЧИКИ КНОПОК СБРОСА ===
     const resetYesBtn = document.getElementById('reset-yes');
@@ -111,45 +121,19 @@ document.addEventListener('DOMContentLoaded', () => {
             text: ['Вы накопили достаточно энергии, чтобы добывать древесину. Да, поначалу придется делать это руками, Соберите хотя бы 5 🌳']
         },
         {
-            id: 'energy-200',
-            threshold: { energy: 200 },
-            text: ['Не накапливайте энерию. Покупка новых панелей позволит вам разогнать скорость зарядки, чтобы добывать больше дерева.']
+            id: 'trees-10',
+            threshold: { trees: 10 },
+            text: ['Отлично! Вы собрали достаточно дерева. Теперь доступна постройка лаборатории. Лаборатории позволят вам накапливать знания и развивать новые технологии. Постройте первую лабораторию для исследований!']
         },
         {
-            id: 'trees-1',
-            threshold: { trees: 1 },
-            text: ['Первое дерево 🌳 отправляется на склад. У вас хорошо получается!']
+            id: 'laboratories-1',
+            threshold: { laboratories: 1 },
+            text: ['Вы построили первую лабораторию! Теперь можете назначать роботов учёными для производства знаний. Перейдите в раздел "Знания" чтобы управлять исследованиями. Каждая лаборатория увеличивает эффективность производства знаний на 10%.']
         },
         {
-            id: 'trees-2',
-            threshold: { trees: 2 },
-            text: ['Вокруг валяются сломанные и поврежденные роботы - наши собратья. Их можно восстановить, и они будут помогать вам, но их придется заряжать на зарядных станциях. Не стройте зарядную станцию, пока зарядка не достигнет 8⚡ в секунду. Иначе вашим роботам не хватит электричества.']
-        },
-        {
-            id: 'panels-2',
-            threshold: { panels: 2 },
-            text: ['Каждая солнечная панель дает ⚡ 0.63/сек. Продолжайте их строить и увидите как растет скорость зарядки.']
-        },
-       
-        {
-            id: 'chargingStations-1',
-            threshold: { chargingStations: 1 },
-            text: ['Вы построили зарядную станцию. Деревянная площадка с крышей, куда роботы могут встать, укрывшись от непогоды и подключиться к зарядке. Каждый робот потребляет 4⚡ в секунду. Если роботам не хватит энергии, они отключатся и их сознание сотрется навсегда. Не позволяйте роботам уйти в забвение']
-        },
-        {
-            id: 'chargingStations-2',
-            threshold: { chargingStations: 2 },
-            text: ['Если вы построили лишнюю постройку, которая тянет из вас ресурсы - постройку можно разрушить без возмещения ресурсов. Чтобы разрушить постройку нажмите ❎ и подтвердите снос здания кнопкой "Да".']
-        },
-        {
-            id: 'robots-1',
-            threshold: { robots: 1 },
-            text: ['Одна зарядная станция позволяет разместить в ней двух роботов. Вы собрали из обломков своего первого робота. Он будет помогать вам и служить во благо новой цивилизации. не забываайте, что робот потребляет 4⚡ в сек. Если энергия кончится - роботы отключатся']
-        },
-        {
-            id: 'robots-2',
-            threshold: { robots: 2 },
-            text: ['Вы построили второго робота. Если вам не будет хватать энергии, вы можете снести зарядную станцию - часть роботов "погибнет" чтобы остальные смогли заряжаться.']
+            id: 'knowledge-50',
+            threshold: { knowledge: 50 },
+            text: ['Ваши учёные накапливают знания! Знания - это основа для будущих технологических прорывов. Продолжайте строить лаборатории и назначать учёных для ускорения исследований.']
         }
     ];
 
@@ -158,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkAssistant() {
         const shown = JSON.parse(localStorage.getItem('shownAssistant') || '[]');
-        const ctx = { panels, trees, energy, chargingStations, robots };
+        const ctx = { panels, trees, energy, chargingStations, robots, laboratories, knowledge };
         const nextMsg = assistantMessages.find(msg =>
             !shown.includes(msg.id) &&
             Object.entries(msg.threshold).every(([key, val]) => ctx[key] >= val)
@@ -206,19 +190,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showAssistant(lines) {
-    const panel = document.getElementById('assistant-panel');
-    const text = document.getElementById('assistant-text');
-    if (panel && text) {
-        panel.classList.remove('hidden');
-        typeAssistant(lines, text, 54);
-
-        panel.onclick = function () {
-            panel.classList.add('hidden');
-            text.textContent = '';
-        };
+        const panel = document.getElementById('assistant-panel');
+        const text = document.getElementById('assistant-text');
+        if (panel && text) {
+            panel.classList.remove('hidden');
+            typeAssistant(lines, text, 54);
+            panel.onclick = function () {
+                panel.classList.add('hidden');
+                text.textContent = '';
+            };
+        }
     }
-}
-
 
     function typeAssistant(lines, elem, speed = 50, callback) {
         let i = 0;
@@ -227,7 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (callback) callback();
                 return;
             }
-
             const line = lines[i++] || '';
             let pos = 0;
             elem.textContent = '';
@@ -257,8 +238,25 @@ document.addEventListener('DOMContentLoaded', () => {
         return Math.floor(BASE_STATION_COST * Math.pow(STATION_PRICE_RATIO, chargingStations));
     }
 
+    function getNextLaboratoryCost() {
+        return Math.floor(LAB_COST_BASE * Math.pow(LAB_COST_RATIO, laboratories));
+    }
+
     function getMaxRobots() {
         return chargingStations * 2;
+    }
+
+    function getMaxScientists() {
+        return laboratories;
+    }
+
+    function calculateMaxKnowledge() {
+        if (laboratories === 0) return 0;
+        return FIRST_LAB_CAPACITY + (laboratories - 1) * ADDITIONAL_LAB_CAPACITY;
+    }
+
+    function getKnowledgeProductionBonus() {
+        return 1 + (laboratories * LAB_KNOWLEDGE_BONUS);
     }
 
     // === СОХРАНЕНИЕ/ЗАГРУЗКА ===
@@ -272,8 +270,12 @@ document.addEventListener('DOMContentLoaded', () => {
             robotProgress: robotProgress,
             lastUpdate: Date.now(),
             treeButtonUnlocked: treeButtonUnlocked,
-            freeRobots: freeRobots, // Добавляем сохранение свободных роботов
-            lumberjackRobots: lumberjackRobots // Добавляем сохранение лесорубов
+            freeRobots: freeRobots,
+            lumberjackRobots: lumberjackRobots,
+            laboratories: laboratories,
+            knowledge: knowledge,
+            maxKnowledge: maxKnowledge,
+            scientistRobots: scientistRobots
         };
         localStorage.setItem('minirobots-save', JSON.stringify(gameData));
     }
@@ -282,7 +284,6 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const savedData = localStorage.getItem('minirobots-save');
             if (!savedData) {
-                // Если нет сохранения, устанавливаем начальные значения
                 energy = 0;
                 panels = 1;
                 trees = 0;
@@ -292,6 +293,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 lastUpdate = Date.now();
                 freeRobots = 0;
                 lumberjackRobots = 0;
+                laboratories = 0;
+                knowledge = 0;
+                scientistRobots = 0;
+                maxKnowledge = 0;
                 return;
             }
 
@@ -303,17 +308,22 @@ document.addEventListener('DOMContentLoaded', () => {
             robots = data.robots || 0;
             robotProgress = data.robotProgress || 0;
             lastUpdate = data.lastUpdate || Date.now();
-            treeButtonUnlocked = data.treeButtonUnlocked || false; // Загружаем состояние кнопки
+            treeButtonUnlocked = data.treeButtonUnlocked || false;
             freeRobots = data.freeRobots || 0;
             lumberjackRobots = data.lumberjackRobots || 0;
+            laboratories = data.laboratories || 0;
+            knowledge = data.knowledge || 0;
+            scientistRobots = data.scientistRobots || 0;
+            maxKnowledge = calculateMaxKnowledge();
 
-            // Миграция старых сохранений: все роботы становятся свободными
+            // Миграция старых сохранений
             if (data.freeRobots === undefined && data.lumberjackRobots === undefined && robots > 0) {
                 freeRobots = robots;
                 lumberjackRobots = 0;
+                scientistRobots = 0;
             }
+
         } catch (e) {
-            // В случае ошибки загрузки, устанавливаем начальные значения
             energy = 0;
             panels = 1;
             trees = 0;
@@ -324,6 +334,10 @@ document.addEventListener('DOMContentLoaded', () => {
             treeButtonUnlocked = false;
             freeRobots = 0;
             lumberjackRobots = 0;
+            laboratories = 0;
+            knowledge = 0;
+            scientistRobots = 0;
+            maxKnowledge = 0;
         }
     }
 
@@ -338,11 +352,10 @@ document.addEventListener('DOMContentLoaded', () => {
             energyTextElem.innerHTML = `${cur} / ${MAX_ENERGY} (${netProduction.toFixed(2)}/сек)`;
         }
 
-        // Деревья — показываем количество, максимум и прирост/сек
+        // Деревья
         if (treesCountElem) {
             const treeProduction = lumberjackRobots * LUMBERJACK_PRODUCTION;
             treesCountElem.textContent = `${Math.floor(trees)} / ${MAX_TREES}`;
-            
             let treeProductionElem = document.getElementById('tree-production');
             if (!treeProductionElem) {
                 treeProductionElem = document.createElement('span');
@@ -350,6 +363,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 treesCountElem.parentElement.appendChild(treeProductionElem);
             }
             treeProductionElem.textContent = ` (${treeProduction.toFixed(2)}/сек)`;
+        }
+
+        // Знания
+        maxKnowledge = calculateMaxKnowledge();
+        if (knowledgeDisplay && laboratories > 0) {
+            knowledgeDisplay.style.display = '';
+            const knowledgeProduction = scientistRobots * SCIENTIST_PRODUCTION * getKnowledgeProductionBonus();
+            knowledgeText.innerHTML = `${Math.floor(knowledge)} / ${maxKnowledge} (${knowledgeProduction.toFixed(2)}/сек)`;
+        } else if (knowledgeDisplay) {
+            knowledgeDisplay.style.display = 'none';
         }
 
         // Панели
@@ -361,21 +384,49 @@ document.addEventListener('DOMContentLoaded', () => {
             panelCostElem.textContent = getNextPanelCost();
         }
 
-        // Кнопка навигации к роботам - показываем только если есть роботы
+        // Лаборатории
+        const laboratoryContainer = document.getElementById('laboratory-container');
+        if (laboratoryContainer) {
+            laboratoryContainer.style.display = trees >= 10 ? '' : 'none';
+        }
+
+        const laboratoriesCountElem = document.getElementById('laboratories-count');
+        const laboratoryCostElem = document.getElementById('laboratory-cost');
+        const labKnowledgeBonusElem = document.getElementById('lab-knowledge-bonus');
+        
+        if (laboratoriesCountElem) {
+            laboratoriesCountElem.textContent = laboratories;
+        }
+        
+        if (laboratoryCostElem) {
+            laboratoryCostElem.textContent = getNextLaboratoryCost();
+        }
+        
+        if (labKnowledgeBonusElem) {
+            labKnowledgeBonusElem.textContent = laboratories === 0 ? '500' : '250';
+        }
+
+        // Кнопка навигации к знаниям
+        const knowledgeNavContainer = document.getElementById('knowledge-nav-container');
+        if (knowledgeNavContainer) {
+            knowledgeNavContainer.style.display = laboratories > 0 ? '' : 'none';
+        }
+
+        // Кнопка навигации к роботам
         const robotsNavContainer = document.getElementById('robots-nav-container');
         if (robotsNavContainer) {
             robotsNavContainer.style.display = robots > 0 ? '' : 'none';
         }
 
-        // Кнопка рубки дерева - показываем при энергии >= 30 и запоминаем это состояние
+        // Кнопка рубки дерева
         if (treeBtn) {
             if (energy >= 30) {
-                treeButtonUnlocked = true; // Разблокируем кнопку навсегда
+                treeButtonUnlocked = true;
             }
             treeBtn.style.display = treeButtonUnlocked ? '' : 'none';
         }
 
-        // Контейнер зарядной станции - показываем ТОЛЬКО при деревьях >= 3
+        // Контейнер зарядной станции
         const stationContainer = document.getElementById('charging-station-container');
         if (stationContainer) {
             stationContainer.style.display = trees >= 3 ? '' : 'none';
@@ -391,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
             stationCostSpan.textContent = getNextStationCost();
         }
 
-        // Роботы - показываем только если есть роботы
+        // Роботы
         if (robotCont) {
             robotCont.style.display = robots > 0 ? '' : 'none';
         }
@@ -419,11 +470,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const now = Date.now();
         const delta = (now - lastUpdate) / 1000;
         lastUpdate = now;
-        
+
         // Производство и потребление энергии
         const totalProduction = panels * PANEL_PRODUCTION;
         const robotConsumption = robots * 4;
         const netEnergyChange = totalProduction - robotConsumption;
+
         if (energy < MAX_ENERGY && netEnergyChange > 0) {
             energy += netEnergyChange * delta;
             if (energy > MAX_ENERGY) energy = MAX_ENERGY;
@@ -434,8 +486,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Проверка отключения роботов при нехватке энергии
         if (energy <= 0 && robots > 0) {
-            // Сначала отключаем лесорубов, потом свободных роботов
-            if (lumberjackRobots > 0) {
+            if (scientistRobots > 0) {
+                scientistRobots--;
+            } else if (lumberjackRobots > 0) {
                 lumberjackRobots--;
             } else if (freeRobots > 0) {
                 freeRobots--;
@@ -455,7 +508,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (robotProgress >= 1) {
                 robots++;
-                freeRobots++; // Новый робот становится свободным
+                freeRobots++;
                 robotProgress = 0;
                 tick();
             }
@@ -471,6 +524,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const treeGain = lumberjackRobots * LUMBERJACK_PRODUCTION * delta;
             trees += treeGain;
             if (trees > MAX_TREES) trees = MAX_TREES;
+        }
+
+        // Производство знаний учёными
+        if (scientistRobots > 0 && knowledge < maxKnowledge) {
+            const knowledgeGain = scientistRobots * SCIENTIST_PRODUCTION * getKnowledgeProductionBonus() * delta;
+            knowledge += knowledgeGain;
+            if (knowledge > maxKnowledge) knowledge = maxKnowledge;
         }
 
         checkAssistant();
@@ -528,12 +588,38 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Обработчик кнопки "Роботы" — переход на страницу robots.html
+    const laboratoryBtn = document.getElementById('laboratory-btn');
+    if (laboratoryBtn) {
+        laboratoryBtn.onclick = () => {
+            const cost = getNextLaboratoryCost();
+            if (trees >= cost) {
+                trees -= cost;
+                laboratories++;
+                tick();
+                saveGame();
+                updateUI();
+                checkAssistant();
+            } else {
+                alert('Недостаточно дерева для лаборатории!');
+            }
+        };
+    }
+
+    // Обработчик кнопки "Роботы"
     const robotsNavBtn = document.getElementById('robots-nav-btn');
     if (robotsNavBtn) {
         robotsNavBtn.onclick = () => {
-            saveGame(); // сохранить игру на всякий случай
+            saveGame();
             window.location.href = 'robots.html';
+        };
+    }
+
+    // Обработчик кнопки "Знания"
+    const knowledgeNavBtn = document.getElementById('knowledge-nav-btn');
+    if (knowledgeNavBtn) {
+        knowledgeNavBtn.onclick = () => {
+            saveGame();
+            window.location.href = 'laboratory.html';
         };
     }
 
@@ -548,9 +634,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const rect = triggerElem.getBoundingClientRect();
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
         demolishMenu.style.display = 'block';
         demolishMenu.setAttribute('aria-hidden', 'false');
-        // Новый расчет left: правый край меню = левому краю кнопки
         demolishMenu.style.left = (rect.left + scrollLeft - demolishMenu.offsetWidth) + 'px';
         demolishMenu.style.top = (rect.bottom + scrollTop + 4) + 'px';
         currentDemolishBtn = buildingBtn;
@@ -600,18 +686,45 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'charging-station-btn':
                     if (chargingStations > 0) {
                         chargingStations--;
-                        // При сносе станции роботы исчезают пропорционально
                         const removedRobots = Math.min(2, robots);
                         const removedFree = Math.min(removedRobots, freeRobots);
-                        const removedLumberjacks = removedRobots - removedFree;
+                        const remainingToRemove = removedRobots - removedFree;
                         
                         freeRobots -= removedFree;
+                        
+                        let removedLumberjacks = Math.min(remainingToRemove, lumberjackRobots);
                         lumberjackRobots -= removedLumberjacks;
+                        
+                        let removedScientists = remainingToRemove - removedLumberjacks;
+                        scientistRobots -= Math.min(removedScientists, scientistRobots);
+                        
                         robots = Math.max(0, robots - removedRobots);
                         updateUI();
                     }
                     break;
+                case 'laboratory-btn':
+                    if (laboratories > 0) {
+                        laboratories--;
+                        
+                        // Проверяем сколько учёных нужно снять с работы
+                        const maxScientists = getMaxScientists();
+                        if (scientistRobots > maxScientists) {
+                            const excess = scientistRobots - maxScientists;
+                            scientistRobots = maxScientists;
+                            freeRobots += excess;
+                        }
+                        
+                        // Пересчитываем максимум знаний
+                        maxKnowledge = calculateMaxKnowledge();
+                        if (knowledge > maxKnowledge) {
+                            knowledge = maxKnowledge;
+                        }
+                        
+                        updateUI();
+                    }
+                    break;
             }
+
             hideDemolishMenu();
             saveGame();
         });
