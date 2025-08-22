@@ -1,0 +1,24 @@
+<!-- robots.html -->
+<div class="robots-page">
+  <h2>Роботы</h2>
+  <div class="robots-info">
+    <p>Доступных роботов: <span id="freeRobots">0</span></p>
+    <p>Всего роботов: <span id="totalRobots">0</span></p>
+  </div>
+  <div class="robots-jobs">
+    <h3>Назначение на работы</h3>
+    <div class="robot-job-row" id="robotJob1">
+      <span class="job-name">Сборщик солнечной энергии</span>
+      <button class="robot-minus">–</button>
+      <span class="job-count" id="jobCount1">0</span>
+      <button class="robot-plus">+</button>
+    </div>
+    <div class="robot-job-row" id="robotJob2">
+      <span class="job-name">Техник</span>
+      <button class="robot-minus">–</button>
+      <span class="job-count" id="jobCount2">0</span>
+      <button class="robot-plus">+</button>
+    </div>
+    <!-- Добавляй новые типы работ ниже по аналогии -->
+  </div>
+</div>
