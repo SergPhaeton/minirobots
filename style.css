@@ -312,3 +312,40 @@ html, body {
 
 /* Усиление для строки энергии на случай переопределений */
 #energy-text .resource-tail { color: var(--muted) !important; }
+
+.demolish-trigger {
+  cursor: pointer;
+  margin-left: 8px;
+  user-select: none;
+}
+
+.demolish-menu {
+  position: absolute;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--green);
+  border-radius: 8px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  display: none;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.demolish-menu button {
+  background: var(--green);
+  color: #183834;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  margin: 0 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.demolish-menu button:hover {
+  background: var(--green-pressed);
+}
+

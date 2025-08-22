@@ -96,11 +96,13 @@
     <!-- Кнопки действий -->
 <!-- Кнопки действий -->
 <div id="panel-container" class="resource-container">
-  <button id="panel-btn" class="btn btn-primary">
-    ☀️ Солнечная панель — <span id="panels-count">1</span> шт.<br>
+  <button id="panel-btn" class="btn btn-primary building-btn">
+    ☀️ Солнечная панель — <span id="panels-count">1</span> шт. 
+    <span class="demolish-trigger" style="cursor:pointer; margin-left:8px;">✅</span><br>
     <small>Дает 0.63/сек. Стоимость: <span id="panel-cost">10</span>⚡</small>
   </button>
 </div>
+
 
 <!-- Новый контейнер для рубки дерева -->
 <div id="tree-container" class="resource-container">
@@ -112,10 +114,12 @@
 
 
     <div id="charging-station-container" style="display: none;">
-      <button id="charging-station-btn" class="btn btn-primary">
-        🔋 Построить зарядную станцию (<span id="stations-count">0</span>)<br>
-        <small>Стоимость: <span id="station-cost">5</span>🌳</small>
-      </button>
+     <button id="charging-station-btn" class="btn btn-primary building-btn">
+  🔋 Зарядная станция (<span id="stations-count">0</span>) шт. 
+  <span class="demolish-trigger" style="cursor:pointer; margin-left:8px;">✅</span><br>
+  <small>Стоимость: <span id="station-cost">5</span>🌳</small>
+</button>
+
     </div>
     <!-- Mini-bot ассистент -->
     <div class="mini-bot" style="display:none;">
@@ -124,5 +128,13 @@
     </div>
   </div>
   <script src="game.js"></script>
+<div id="demolish-menu" class="demolish-menu" role="dialog" aria-modal="true" aria-hidden="true">
+  <div>Снести здание?</div>
+  <div style="margin-top: 8px; text-align: center;">
+    <button id="demolish-yes">Да</button>
+    <button id="demolish-no">Нет</button>
+  </div>
+</div>
+
 </body>
 </html>
