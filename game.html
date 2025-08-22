@@ -61,6 +61,28 @@
     line-height: 1.4;
     overflow-wrap: break-word;
   }
+
+.btn-robots {
+  background: linear-gradient(135deg, #4ea2e2, #5eb7ff);
+  color: #fff;
+  border: none;
+  box-shadow: 0 3px 18px rgba(80,160,255,0.18);
+  font-weight: 700;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+}
+
+.btn-robots:hover, .btn-robots:focus {
+  background: linear-gradient(135deg, #2492e7, #189eff);
+  color: #fff;
+  transform: translateY(-1px) scale(1.03);
+}
+
+.btn-robots:active {
+  background: #2492e7;
+  color: #fff;
+  transform: translateY(1px) scale(0.98);
+}
+
 </style>
 
 
@@ -98,22 +120,20 @@
 
 <!-- Контейнер кнопки «Роботы» -->
 <div id="robots-nav-container" class="resource-container" style="display: none; margin-bottom: 16px;">
-  <button id="robots-nav-btn" class="btn btn-primary building-btn">
+  <button id="robots-nav-btn" class="btn btn-robots building-btn">
     🤖 Роботы
-  </button>
+</button>
+
 </div>
 
 <!-- Кнопки действий -->
 <div id="panel-container" class="resource-container">
   <button id="panel-btn" class="btn btn-primary building-btn">
     ☀️ Солнечная панель — <span id="panels-count">1</span> шт. 
-    <span class="demolish-trigger" style="cursor:pointer; margin-left:8px;">✅</span><br>
+    <span class="demolish-trigger" style="cursor:pointer; margin-left:8px;">❎</span><br>
     <small>Дает 0.63/сек. Стоимость: <span id="panel-cost">10</span>⚡</small>
   </button>
 </div>
-
-
-
 
 <!-- Новый контейнер для рубки дерева -->
 <div id="tree-container" class="resource-container">
@@ -127,7 +147,7 @@
     <div id="charging-station-container" style="display: none;">
      <button id="charging-station-btn" class="btn btn-primary building-btn">
   🔋 Зарядная станция (<span id="stations-count">0</span>) шт. 
-  <span class="demolish-trigger" style="cursor:pointer; margin-left:8px;">✅</span><br>
+  <span class="demolish-trigger" style="cursor:pointer; margin-left:8px;">❎</span><br>
   <small>Стоимость: <span id="station-cost">5</span>🌳</small>
 </button>
 

@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         {
             id: 'chargingStations-2',
             threshold: { chargingStations: 2 },
-            text: ['Если вы построили лишнюю постройку, которая тянет из вас ресурсы - постройку можно разрушить. При этом вы не получите обратно потраченные ресурсы. Чтобы разрушить постройку нужно нажать на зеленую галочку и подтвердить снос здания кнопкой "Да".']
+            text: ['Если вы построили лишнюю постройку, которая тянет из вас ресурсы - постройку можно разрушить без возмещения ресурсов. Чтобы разрушить постройку нажмите ❎ и подтвердите снос здания кнопкой "Да".']
         },
         {
             id: 'robots-1',
@@ -325,10 +325,21 @@ treeButtonUnlocked = data.treeButtonUnlocked || false; // Загружаем с�
             energyTextElem.innerHTML = `${cur} / ${MAX_ENERGY} (${netProduction.toFixed(2)}/сек)`;
         }
 
-        // Деревья
-        if (treesCountElem) {
-            treesCountElem.textContent = trees;
-        }
+        // Деревья — показываем также прирост/сек
+if (treesCountElem) {
+    treesCountElem.textContent = trees;
+    // ВСТАВЬ элемент для прироста дерева (создать если нет в HTML)
+    let treeProduction = robots * 2.5; // измени формулу если нужно!
+    let treeProductionElem = document.getElementById('tree-production');
+    if (!treeProductionElem) {
+        // Создать span для прироста, если его нет
+        treeProductionElem = document.createElement('span');
+        treeProductionElem.id = 'tree-production';
+        treesCountElem.parentElement.appendChild(treeProductionElem);
+    }
+    treeProductionElem.textContent = ` (${treeProduction.toFixed(2)}/сек)`;
+}
+
 
         // Панели
         if (panelsCountElem) {
@@ -509,18 +520,19 @@ if (robotsNavBtn) {
     const demolishNoBtn = document.getElementById('demolish-no');
     let currentDemolishBtn = null;
 
-    function showDemolishMenu(triggerElem, buildingBtn) {
-        if (!demolishMenu) return;
-        const rect = triggerElem.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+   function showDemolishMenu(triggerElem, buildingBtn) {
+    if (!demolishMenu) return;
+    const rect = triggerElem.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    demolishMenu.style.display = 'block';
+    demolishMenu.setAttribute('aria-hidden', 'false');
+    // Новый расчет left: правый край меню = левому краю кнопки
+    demolishMenu.style.left = (rect.left + scrollLeft - demolishMenu.offsetWidth) + 'px';
+    demolishMenu.style.top = (rect.bottom + scrollTop + 4) + 'px';
+    currentDemolishBtn = buildingBtn;
+}
 
-        demolishMenu.style.top = (rect.bottom + scrollTop + 4) + 'px';
-        demolishMenu.style.left = (rect.left + scrollLeft) + 'px';
-        demolishMenu.style.display = 'block';
-        demolishMenu.setAttribute('aria-hidden', 'false');
-        currentDemolishBtn = buildingBtn;
-    }
 
     function hideDemolishMenu() {
         if (!demolishMenu) return;

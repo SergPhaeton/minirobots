@@ -425,3 +425,21 @@ html, body, .screen {
     transform: translateY(0);
 }
 
+.btn-robots {
+  background: linear-gradient(135deg, #4ea2e2, #5eb7ff);
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  box-shadow: 0 3px 18px rgba(80,160,255,0.18);
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+}
+.btn-robots:hover, .btn-robots:focus {
+  background: linear-gradient(135deg, #2492e7, #189eff);
+  color: #fff;
+  transform: translateY(-1px) scale(1.03);
+}
+.btn-robots:active {
+  background: #2492e7;
+  color: #fff;
+  transform: translateY(1px) scale(0.98);
+}
