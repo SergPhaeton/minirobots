@@ -194,6 +194,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const text = document.getElementById('assistant-text');
         if (panel && text) {
             panel.classList.remove('hidden');
+            // ИЗМЕНЕНИЕ ПОЗИЦИИ ПОМОЩНИКА НА ВЕРХ
+            panel.style.position = 'fixed';
+            panel.style.top = '20px';
+            panel.style.bottom = 'auto';
             typeAssistant(lines, text, 54);
             panel.onclick = function () {
                 panel.classList.add('hidden');
@@ -706,13 +710,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (laboratories > 0) {
                         laboratories--;
                         
-                        // Проверяем сколько учёных нужно снять с работы
-                        const maxScientists = getMaxScientists();
-                        if (scientistRobots > maxScientists) {
-                            const excess = scientistRobots - maxScientists;
-                            scientistRobots = maxScientists;
-                            freeRobots += excess;
-                        }
+                        // УБРАНО ОГРАНИЧЕНИЕ НА УЧЁНЫХ ПРИ СНОСЕ ЛАБОРАТОРИИ
+                        // Теперь учёные могут работать без привязки к количеству лабораторий
                         
                         // Пересчитываем максимум знаний
                         maxKnowledge = calculateMaxKnowledge();

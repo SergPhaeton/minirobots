@@ -199,8 +199,14 @@
         
         <div class="stats">
             <div class="resource-row">
-                <span>⚡ Зарядка:</span>
-                <span id="energy-text">0 / 5000 (0.00/сек)</span>
+               <span>⚡ Зарядка:</span>
+<div id="energy-text" class="resource-line">
+  <span class="resource-lead">0</span>
+  <span class="resource-separator">/</span>
+  <span class="resource-tail">5000</span>
+  <span class="resource-speed">(0.00/сек)</span>
+</div>
+
             </div>
             <div class="resource-row">
                 <span>🌳 Дерево:</span>
@@ -226,7 +232,6 @@
         </div>
         
         <div class="buildings">
-            <h2>Производим новых роботов:</h2>
             
             <div id="robot-progress-container" class="robot-progress hidden">
                 <div>Строим робота...</div>
@@ -266,7 +271,7 @@
                         <strong>🧬 Лаборатория</strong> - <span id="laboratories-count">0</span> шт.<br>
                         <small>Прирост знаний: +10.00%</small><br>
                         <small>Макс. знаний: +<span id="lab-knowledge-bonus">500</span></small><br>
-                        <small>Требуется дерево: <span id="laboratory-cost">25</span></small>
+                        <small>Стоимость: <span id="laboratory-cost">25</span> 🌳</small>
                     </div>
                     <span class="demolish-trigger">❎</span>
                 </button>

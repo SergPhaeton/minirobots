@@ -3,14 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadGameData() {
         try {
             const savedData = localStorage.getItem('minirobots-save');
-            if (!savedData) return { 
-                freeRobots: 0, 
-                lumberjackRobots: 0, 
+            if (!savedData) return {
+                freeRobots: 0,
+                lumberjackRobots: 0,
                 scientistRobots: 0,
-                robots: 0, 
-                laboratories: 0 
+                robots: 0,
+                laboratories: 0
             };
-            
             const data = JSON.parse(savedData);
             return {
                 freeRobots: data.freeRobots || 0,
@@ -20,9 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 laboratories: data.laboratories || 0
             };
         } catch (e) {
-            return { 
-                freeRobots: 0, 
-                lumberjackRobots: 0, 
+            return {
+                freeRobots: 0,
+                lumberjackRobots: 0,
                 scientistRobots: 0,
                 robots: 0,
                 laboratories: 0
@@ -49,55 +48,48 @@ document.addEventListener('DOMContentLoaded', () => {
     // Обновление UI
     function updateRobotsUI() {
         const gameData = loadGameData();
-        
-        // Основная информация
+
+        // Обновляем общий счетчик свободных роботов
         const freeRobotsElem = document.getElementById('free-robots-count');
-        const lumberjackCountElem = document.getElementById('lumberjack-count');
-        const scientistCountElem = document.getElementById('scientist-count');
-        const scientistSlotsElem = document.getElementById('scientist-slots');
-        const scientistRow = document.getElementById('scientist-row');
-        
         if (freeRobotsElem) freeRobotsElem.textContent = gameData.freeRobots;
-        if (lumberjackCountElem) lumberjackCountElem.textContent = gameData.lumberjackRobots;
-        if (scientistCountElem) scientistCountElem.textContent = gameData.scientistRobots;
-        if (scientistSlotsElem) scientistSlotsElem.textContent = gameData.laboratories;
-        
-        // Показываем раздел учёных только если есть лаборатории
-        if (scientistRow) {
-            scientistRow.style.display = gameData.laboratories > 0 ? '' : 'none';
-        }
-        
-        // Управление доступностью кнопок
+
+        // Лесоруб
+        const lumberjackCountElem = document.getElementById('lumberjack-count');
+        const lumberjackFreeElem = document.getElementById('lumberjack-free');
+        if (lumberjackCountElem) lumberjackCountElem.textContent = `Работает роботов: ${gameData.lumberjackRobots}`;
+        if (lumberjackFreeElem) lumberjackFreeElem.textContent = `Свободных роботов: ${gameData.freeRobots}`;
+
+        // Учёный
+        const scientistCountElem = document.getElementById('scientist-count');
+        const scientistFreeElem = document.getElementById('scientist-free');
+        if (scientistCountElem) scientistCountElem.textContent = `Работает роботов: ${gameData.scientistRobots}`;
+        if (scientistFreeElem) scientistFreeElem.textContent = `Свободных роботов: ${gameData.freeRobots}`;
+
+        // Устанавливаем доступность кнопок
         updateButtonStates();
     }
-    
-    // Обновление состояния кнопок
+
+    // Управление доступностью кнопок
     function updateButtonStates() {
         const gameData = loadGameData();
-        
         const lumberjackPlusBtn = document.getElementById('lumberjack-plus');
         const lumberjackMinusBtn = document.getElementById('lumberjack-minus');
         const scientistPlusBtn = document.getElementById('scientist-plus');
         const scientistMinusBtn = document.getElementById('scientist-minus');
-        
-        // Кнопки лесоруба
+
         if (lumberjackPlusBtn) {
             lumberjackPlusBtn.disabled = gameData.freeRobots <= 0;
             lumberjackPlusBtn.style.opacity = gameData.freeRobots <= 0 ? '0.5' : '1';
         }
-        
         if (lumberjackMinusBtn) {
             lumberjackMinusBtn.disabled = gameData.lumberjackRobots <= 0;
             lumberjackMinusBtn.style.opacity = gameData.lumberjackRobots <= 0 ? '0.5' : '1';
         }
-        
-        // Кнопки учёного
         if (scientistPlusBtn) {
-            const canAddScientist = gameData.freeRobots > 0 && gameData.scientistRobots < gameData.laboratories;
+            const canAddScientist = gameData.freeRobots > 0;
             scientistPlusBtn.disabled = !canAddScientist;
             scientistPlusBtn.style.opacity = canAddScientist ? '1' : '0.5';
         }
-        
         if (scientistMinusBtn) {
             scientistMinusBtn.disabled = gameData.scientistRobots <= 0;
             scientistMinusBtn.style.opacity = gameData.scientistRobots <= 0 ? '0.5' : '1';
@@ -107,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Обработчики кнопок лесоруба
     const lumberjackPlusBtn = document.getElementById('lumberjack-plus');
     const lumberjackMinusBtn = document.getElementById('lumberjack-minus');
-    
     if (lumberjackPlusBtn) {
         lumberjackPlusBtn.onclick = () => {
             const gameData = loadGameData();
@@ -119,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
     }
-
     if (lumberjackMinusBtn) {
         lumberjackMinusBtn.onclick = () => {
             const gameData = loadGameData();
@@ -131,15 +121,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
     }
-    
+
     // Обработчики кнопок учёного
     const scientistPlusBtn = document.getElementById('scientist-plus');
     const scientistMinusBtn = document.getElementById('scientist-minus');
-    
     if (scientistPlusBtn) {
         scientistPlusBtn.onclick = () => {
             const gameData = loadGameData();
-            if (gameData.freeRobots > 0 && gameData.scientistRobots < gameData.laboratories) {
+            if (gameData.freeRobots > 0) {
                 gameData.freeRobots--;
                 gameData.scientistRobots++;
                 saveChanges(gameData.freeRobots, gameData.lumberjackRobots, gameData.scientistRobots);
@@ -147,7 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
     }
-
     if (scientistMinusBtn) {
         scientistMinusBtn.onclick = () => {
             const gameData = loadGameData();
@@ -162,7 +150,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Инициализация
     updateRobotsUI();
-    
-    // Обновляем UI каждые 100мс для синхронизации с основной игрой
     setInterval(updateRobotsUI, 100);
 });

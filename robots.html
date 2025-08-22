@@ -1,177 +1,150 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🤖 Роботы - MiniRobots</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            color: white;
-            min-height: 100vh;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .header h1 {
-            color: #4a90e2;
-            margin: 0;
-        }
-        
-        .stats {
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .jobs-section {
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .job-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 10px;
-            margin: 10px 0;
-        }
-        
-        .job-info {
-            flex-grow: 1;
-        }
-        
-        .job-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .job-description {
-            font-size: 14px;
-            color: #ccc;
-            margin-bottom: 5px;
-        }
-        
-        .job-count {
-            font-size: 14px;
-            color: #00ff88;
-        }
-        
-        .job-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .btn {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        
-        .btn-plus {
-            background: #00ff88;
-            color: black;
-        }
-        
-        .btn-minus {
-            background: #ff4444;
-            color: white;
-        }
-        
-        .btn:hover {
-            opacity: 0.8;
-        }
-        
-        .back-btn {
-            background: #4a90e2;
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 15px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 20px;
-            width: 100%;
-        }
-        
-        .back-btn:hover {
-            background: #357abd;
-        }
-        
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 0;
-            font-size: 16px;
-        }
-        
-        .stat-value {
-            font-weight: bold;
-            color: #00ff88;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🤖 Роботы - MiniRobots</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #1f2331;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      color: #4a90e2;
+      margin: 0;
+    }
+    .stats {
+      background: #2a2e3e;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 16px;
+      margin: 6px 0;
+    }
+    .jobs-section {
+      background: #2a2e3e;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .job-row {
+      background: #3f4558;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 10px 0;
+      position: relative;
+      color: white;
+    }
+    .job-title {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+    .job-desc {
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #ccc;
+    }
+    .job-count {
+      font-size: 14px;
+      color: #00ff88;
+      margin-bottom: 6px;
+    }
+    .job-free {
+      font-size: 14px;
+      color: #00ff88;
+      margin-bottom: 6px;
+    }
+    .job-controls {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      display: flex;
+      gap: 8px;
+    }
+    .btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    .btn-plus {
+      background: #3b7ddd;
+      color: white;
+    }
+    .btn-minus {
+      background: #ff4444;
+      color: white;
+    }
+    .btn-plus:hover {
+      background: #336ecf;
+    }
+    .btn-minus:hover {
+      background: #cc0000;
+    }
+    .back-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: #3b7ddd;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 0;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .back-btn:hover {
+      background: #336ecf;
+    }
+  </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🤖 Роботы</h1>
+  <div class="header"><h1>🤖 Роботы</h1></div>
+  <div class="stats">
+    <div class="stat-row">
+      <span>Свободных роботов:</span>
+      <span id="free-robots-count">0</span>
     </div>
-    
-    <div class="stats">
-        <div class="stat-row">
-            <span>Свободных роботов:</span>
-            <span class="stat-value" id="free-robots-count">0</span>
-        </div>
+  </div>
+  <div class="jobs-section">
+    <h2>Назначение профессий</h2>
+    <div class="job-row" id="lumberjack-row">
+      <div class="job-title">🪓 Лесоруб</div>
+      <div class="job-desc">Добывает: +0.09 🌳/сек</div>
+      <div class="job-count" id="lumberjack-count">Работает роботов: 0</div>
+      <div class="job-free" id="lumberjack-free">Свободных роботов: 0</div>
+      <div class="job-controls">
+        <button class="btn btn-plus" id="lumberjack-plus">+</button>
+        <button class="btn btn-minus" id="lumberjack-minus">−</button>
+      </div>
     </div>
-    
-    <div class="jobs-section">
-        <h2>Назначение профессий</h2>
-        
-        <div class="job-row">
-            <div class="job-info">
-                <div class="job-title">🪓 Лесоруб</div>
-                <div class="job-description">Добывает: +0.09 🌳/сек</div>
-                <div class="job-count">Работает: <span id="lumberjack-count">0</span> роботов</div>
-            </div>
-            <div class="job-controls">
-                <button class="btn btn-plus" id="lumberjack-plus">+</button>
-                <button class="btn btn-minus" id="lumberjack-minus">−</button>
-            </div>
-        </div>
-        
-        <div class="job-row" id="scientist-row" style="display: none;">
-            <div class="job-info">
-                <div class="job-title">👨‍🔬 Учёный</div>
-                <div class="job-description">Производит: +0.175 📚/сек</div>
-                <div class="job-count">Работает: <span id="scientist-count">0</span> роботов</div>
-                <div class="job-count">Доступно слотов: <span id="scientist-slots">0</span></div>
-            </div>
-            <div class="job-controls">
-                <button class="btn btn-plus" id="scientist-plus">+</button>
-                <button class="btn btn-minus" id="scientist-minus">−</button>
-            </div>
-        </div>
+    <div class="job-row" id="scientist-row">
+      <div class="job-title">👨🔬 Учёный</div>
+      <div class="job-desc">Производит: +0.175 📚/сек</div>
+      <div class="job-count" id="scientist-count">Работает роботов: 0</div>
+      <div class="job-free" id="scientist-free">Свободных роботов: 0</div>
+      <div class="job-controls">
+        <button class="btn btn-plus" id="scientist-plus">+</button>
+        <button class="btn btn-minus" id="scientist-minus">−</button>
+      </div>
     </div>
-    
-    <button class="back-btn" onclick="window.location.href='game.html'">↩️ Назад к игре</button>
-    
-    <script src="robots.js"></script>
+  </div>
+  <button class="back-btn" onclick="window.location.href='game.html'">↩️ Назад к игре</button>
+  <script src="robots.js"></script>
 </body>
 </html>
