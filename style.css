@@ -97,7 +97,7 @@ html, body {
   display: none !important;
 }
 
-/* Экран “Об игре” */
+/* Экран "Об игре" */
 .about {
   width: min(640px, 92vw);
   margin: 0;
@@ -269,6 +269,7 @@ html, body {
     right: 8px;
     bottom: 10px;
   }
+  
   .mini-bot-bubble {
     max-width: 150px;
     font-size: 0.95em;
@@ -308,8 +309,6 @@ html, body {
 .resource-line { display: inline; }
 .resource-line .resource-lead { color: var(--text); }
 .resource-line .resource-tail { color: var(--muted); }
-
-
 /* Усиление для строки энергии на случай переопределений */
 #energy-text .resource-tail { color: var(--muted) !important; }
 
@@ -347,5 +346,82 @@ html, body {
 
 .demolish-menu button:hover {
   background: var(--green-pressed);
+}
+
+/* --- Стили для кнопок назначения роботов --- */
+.job-btn {
+  font-weight: 600;
+  font-size: 1.4em;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #469062 !important;
+  color: #fff;
+  transition: background 0.16s, transform 0.11s, box-shadow 0.14s;
+  box-shadow: 0 1px 4px rgba(32, 85, 70, 0.09);
+  outline: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.job-plus {
+  background: #469062 !important;
+}
+
+.job-minus {
+  background: #469062 !important;
+}
+
+.job-btn:hover,
+.job-btn:focus {
+  transform: scale(1.08);
+  box-shadow: 0 3px 12px rgba(30, 80, 60, 0.14);
+}
+
+.job-plus:hover,
+.job-plus:focus {
+  background: #6bb584 !important;
+}
+
+.job-minus:hover,
+.job-minus:focus {
+  background: #3a7a52 !important;
+}
+
+.job-btn:active {
+  transform: scale(0.96);
+  filter: brightness(0.96);
+}
+
+html, body, .screen {
+  background: #162033 !important;
+}
+
+/* Добавить в CSS */
+.nav-btn {
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.nav-btn:hover {
+    background: linear-gradient(135deg, #357abd, #2968a3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(74, 144, 226, 0.4);
+}
+
+.nav-btn:active {
+    transform: translateY(0);
 }
 

@@ -52,6 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let robots = 0;
     let robotProgress = 0;
     let lastUpdate = Date.now();
+    let treeButtonUnlocked = false; //разблокировка кнопки дерева
+    
+
 
     // === DOM ЭЛЕМЕНТЫ ===
     const energyTextElem = document.getElementById('energy-text');
@@ -91,19 +94,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === ТЕКСТОВЫЙ ПОМОЩНИК ===
     const assistantMessages = [
-        {
+                {
             id: 'energy-0.1',
             threshold: { energy: 0.1 },
-            text: ['Вы - последний уцелевший робот после апокалипсиса. Вы должны были погибнуть в огне, но случайно нашли солнечную панель. Подключившись к ней вы смогли восстановить заряд. Сейчас нужно подождать, чтобы аккумулятор зарядился. Если построить вторую солнечную панель - зарядка пойдет быстрее.']
+            text: ['Вы - последний уцелевший робот после апокалипсиса. Вы должны были погибнуть в огне, но случайно нашли солнечную панель. Подключившись к ней вы смогли восстановить заряд. Сейчас нужно подождать, чтобы аккумулятор зарядился. Нажмите на ☀️ солнце, чтобы построить вторую солнечную панель - зарядка пойдет быстрее.']
         },
         {
-            id: 'energy-0.1',
-            threshold: { energy: 0.1 },
-            text: ['Вы - последний уцелевший робот после апокалипсиса. Вы должны были погибнуть в огне, но случайно нашли солнечную панель. Подключившись к ней вы смогли восстановить заряд. Сейчас нужно подождать, чтобы аккумулятор зарядился. Если построить вторую солнечную панель - зарядка пойдет быстрее.']
-        },
-        {
-            id: 'energy-30',
-            threshold: { energy: 30 },
+            id: 'energy-20',
+            threshold: { energy: 20 },
             text: ['Что я вижу? Дым рассеялся и стало видно, что рядом есть лес. Мы можем нарубить немного дерева, однако это затратно для твоей энергии. Дождись, когда зарядка достигнет 100 и ты сможешь получать древесину.']
         },
         {
@@ -263,18 +261,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // === СОХРАНЕНИЕ/ЗАГРУЗКА ===
-    function saveGame() {
-        const gameData = {
-            energy: energy,
-            panels: panels,
-            trees: trees,
-            chargingStations: chargingStations,
-            robots: robots,
-            robotProgress: robotProgress,
-            lastUpdate: Date.now()
-        };
-        localStorage.setItem('minirobots-save', JSON.stringify(gameData));
-    }
+  function saveGame() {
+    const gameData = {
+        energy: energy,
+        panels: panels,
+        trees: trees,
+        chargingStations: chargingStations,
+        robots: robots,
+        robotProgress: robotProgress,
+        lastUpdate: Date.now(),
+        treeButtonUnlocked: treeButtonUnlocked // Добавляем сохранение состояния кнопки
+    };
+    localStorage.setItem('minirobots-save', JSON.stringify(gameData));
+}
+
 
     function loadGame() {
         try {
@@ -293,12 +293,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = JSON.parse(savedData);
             energy = data.energy || 0;
-            panels = data.panels || 1;
-            trees = data.trees || 0;
-            chargingStations = data.chargingStations || 0;
-            robots = data.robots || 0;
-            robotProgress = data.robotProgress || 0;
-            lastUpdate = data.lastUpdate || Date.now();
+panels = data.panels || 1;
+trees = data.trees || 0;
+chargingStations = data.chargingStations || 0;
+robots = data.robots || 0;
+robotProgress = data.robotProgress || 0;
+lastUpdate = data.lastUpdate || Date.now();
+treeButtonUnlocked = data.treeButtonUnlocked || false; // Загружаем состояние кнопки
+
         } catch (e) {
             // В случае ошибки загрузки, устанавливаем начальные значения
             energy = 0;
@@ -308,6 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
             robots = 0;
             robotProgress = 0;
             lastUpdate = Date.now();
+            treeButtonUnlocked = false;
         }
     }
 
@@ -335,10 +338,20 @@ document.addEventListener('DOMContentLoaded', () => {
             panelCostElem.textContent = getNextPanelCost();
         }
 
-        // Кнопка рубки дерева - показываем ТОЛЬКО при энергии >= 30
-        if (treeBtn) {
-            treeBtn.style.display = energy >= 30 ? '' : 'none';
-        }
+        // Кнопка навигации к роботам - показываем только если есть роботы
+const robotsNavContainer = document.getElementById('robots-nav-container');
+if (robotsNavContainer) {
+    robotsNavContainer.style.display = robots > 0 ? '' : 'none';
+}
+
+        // Кнопка рубки дерева - показываем при энергии >= 30 и запоминаем это состояние
+if (treeBtn) {
+    if (energy >= 30) {
+        treeButtonUnlocked = true; // Разблокируем кнопку навсегда
+    }
+    treeBtn.style.display = treeButtonUnlocked ? '' : 'none';
+}
+
 
         // Контейнер зарядной станции - показываем ТОЛЬКО при деревьях >= 3
         const stationContainer = document.getElementById('charging-station-container');
@@ -359,6 +372,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (robotCont) {
             robotCont.style.display = robots > 0 ? '' : 'none';
         }
+       
+
         if (robotsCountElem) {
             robotsCountElem.textContent = Math.floor(robots);
         }
@@ -476,6 +491,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
     }
+
+    // Обработчик кнопки "Роботы" — переход на страницу robots.html
+const robotsNavBtn = document.getElementById('robots-nav-btn');
+if (robotsNavBtn) {
+    robotsNavBtn.onclick = () => {
+        saveGame(); // сохранить игру на всякий случай
+        window.location.href = 'robots.html';
+    };
+}
+
+
 
     // === ЛОГИКА СНОСА ЗДАНИЙ ===
     const demolishMenu = document.getElementById('demolish-menu');

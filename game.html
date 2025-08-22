@@ -30,6 +30,9 @@
 </button>
 
 
+
+
+
   <style>
   #assistant-panel {
   position: fixed;
@@ -91,9 +94,15 @@
         <div id="robot-progress-bar" style="width:0%; height:100%; background:var(--green); transition:width 0.1s linear;"></div>
       </div>
     </div>
-    <!-- Производство энергии -->
+  <!-- Производство энергии -->
 
-    <!-- Кнопки действий -->
+<!-- Контейнер кнопки «Роботы» -->
+<div id="robots-nav-container" class="resource-container" style="display: none; margin-bottom: 16px;">
+  <button id="robots-nav-btn" class="btn btn-primary building-btn">
+    🤖 Роботы
+  </button>
+</div>
+
 <!-- Кнопки действий -->
 <div id="panel-container" class="resource-container">
   <button id="panel-btn" class="btn btn-primary building-btn">
@@ -102,6 +111,8 @@
     <small>Дает 0.63/сек. Стоимость: <span id="panel-cost">10</span>⚡</small>
   </button>
 </div>
+
+
 
 
 <!-- Новый контейнер для рубки дерева -->
