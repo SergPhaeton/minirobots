@@ -1,40 +1,260 @@
-﻿<!doctype html>
+﻿<!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-    <title>Minirobots</title>
-    <link rel="stylesheet" href="./style.css" />
-  </head>
-  <body>
-    <main id="app" class="screen">
-      <h1 class="visually-hidden">Minirobots</h1>
-      <!-- СЕКЦИЯ: MENU -->
-      <section id="menu" class="menu">
-        <button id="btn-play" class="btn btn-primary">🤖 Играть</button>
-        <button id="btn-about" class="btn btn-secondary">📖 Об игре</button>
-        <button id="btn-settings" class="btn btn-secondary">⚙️ Настройки</button>
-	<button id="btn-blog" class="btn btn-secondary">📕 Блог разработчика</button>
-        <div id="reset-game" class="hidden" style="margin-top:12px;">
-  <p>Сбросить игру? Внимание! Весь игровой процесс будет уничтожен!</p>
-  <button id="btn-reset-yes" class="btn btn-primary">Да</button>
-  <button id="btn-reset-no" class="btn btn-secondary">Нет</button>
-</div>
-      </section>
-      <!-- /СЕКЦИЯ: MENU -->
-
-      <!-- СЕКЦИЯ: ABOUT -->
-      <section id="about" class="about" hidden>
-        <div class="about__inner">
-          <h2>Об игре</h2>
-          <p id="about-text" class="type-line" aria-live="polite"></p>
-          <button id="btn-back" class="btn btn-secondary">Назад</button>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Minirobots – Игра про роботов</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .hidden {
+            display: none !important;
+        }
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 3000;
+        }
+        .modal-content {
+            max-width: 300px; width: 90%; padding: 20px;
+        }
+        .menu-section {
+            margin-bottom: 24px;
+        }
+        .menu-section:last-child {
+            margin-bottom: 0;
+        }
+        /* Отступ для панели настроек под кнопкой */
+        #settingsPanel.menu-section {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Главное меню -->
+    <div id="mainMenu" class="game-container">
+        <div class="game-header">
+            <h1 class="game-title">🤖 МИНИ РОБОТЫ</h1>
+            <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">
+                Игра про роботов и солнечную энергию
+            </p>
         </div>
-      </section>
-      <!-- /СЕКЦИЯ: ABOUT -->
-    </main>
 
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="./app.js"></script>
-  </body>
+        <div class="menu-section">
+            <a href="game.html" class="building-item" style="text-decoration: none; color: inherit;">
+                <div class="building-content">
+                    <div class="building-icon">🤖</div>
+                    <div class="building-info">
+                        <div class="building-name">Играть</div>
+                        <div class="building-desc">Скорее входи, в этот чудный, новый мир!</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="menu-section">
+            <div class="building-item" onclick="showAbout()">
+                <div class="building-content">
+                    <div class="building-icon">📖</div>
+                    <div class="building-info">
+                        <div class="building-name">Об игре</div>
+                        <div class="building-desc">Узнать предысторию игры</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <div class="building-item" onclick="showSettings()">
+                <div class="building-content">
+                    <div class="building-icon">⚙️</div>
+                    <div class="building-info">
+                        <div class="building-name">Настройки</div>
+                        <div class="building-desc">Пока здесь нечего настраивать. Но можно сбросить игровой процесс</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Панель настроек под кнопкой "Настройки" -->
+        <div id="settingsPanel" class="menu-section hidden">
+            <div class="building-item" onclick="showResetConfirm()" style="border-color: var(--accent-red); opacity: 0.8;">
+                <div class="building-content">
+                    <div class="building-icon" style="color: var(--accent-red);">🗑️</div>
+                    <div class="building-info">
+                        <div class="building-name" style="color: var(--accent-red);">Сбросить игру</div>
+                        <div class="building-desc">Сбросить все переменные в начальное состояние</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <div class="building-item" onclick="showBlog()">
+                <div class="building-content">
+                    <div class="building-icon">📕</div>
+                    <div class="building-info">
+                        <div class="building-name">Блог разработчика</div>
+                        <div class="building-desc">Новости и обновления</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Экран игры -->
+    <div id="gameScreen" class="game-container hidden">
+        <div class="game-header">
+            <h1 class="game-title">🤖 Minirobots</h1>
+        </div>
+        <div class="resources-panel">
+            <div class="resource-item">
+                <div class="resource-icon">☀️</div>
+                <div class="resource-info">
+                    <span class="resource-label">Энергия:</span>
+                    <span class="resource-value" id="energy">0</span>
+                    <span class="production-info" id="energyProduction">(+0.0/сек)</span>
+                </div>
+            </div>
+            <div class="resource-item">
+                <div class="resource-icon">🤖</div>
+                <div class="resource-info">
+                    <span class="resource-label">Роботы:</span>
+                    <span class="resource-value" id="robots">1</span>
+                </div>
+            </div>
+        </div>
+        <div class="nav-buttons">
+            <button class="nav-button" onclick="showTab('buildings')"><span class="nav-icon">🏭</span><span class="nav-text">Постройки</span></button>
+            <button class="nav-button" onclick="showTab('robots')"><span class="nav-icon">🤖</span><span class="nav-text">Роботы</span></button>
+            <button class="nav-button" onclick="showTab('research')"><span class="nav-icon">🔬</span><span class="nav-text">Исследования</span></button>
+        </div>
+        <div id="gameContent" class="buildings-panel">
+            <div class="building-item" onclick="collectEnergy()">
+                <div class="building-content">
+                    <div class="building-icon">☀️</div>
+                    <div class="building-info">
+                        <div class="building-name">Собрать энергию</div>
+                        <div class="building-desc">Нажмите для получения солнечной энергии</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="exit-container">
+            <button class="exit-btn" onclick="showMainMenu()">← Вернуться в меню</button>
+        </div>
+    </div>
+
+    <!-- Экран "Об игре" -->
+    <div id="aboutScreen" class="game-container hidden">
+        <div class="game-header">
+            <h1 class="game-title">📖 Об игре</h1>
+        </div>
+        <div class="resources-panel">
+            <h3 style="color: var(--accent-blue); margin-bottom:12px;">🤖 Minirobots</h3>
+            <p style="color: var(--text-secondary); line-height:1.5;">
+                Управляйте последними роботами на Земле, собирайте солнечную энергию,<br />
+                стройте панели, станции и исследуйте новые технологии.
+            </p>
+        </div>
+        <div class="exit-container">
+            <button class="exit-btn" onclick="showMainMenu()">← Назад</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно подтверждения сброса -->
+    <div id="resetConfirm" class="modal hidden">
+        <div class="modal-content">
+            <div class="resources-panel">
+                <h3 style="color: var(--accent-red); text-align:center; margin-bottom:16px;">
+                    ⚠️ Сбросить игру?
+                </h3>
+                <p style="color: var(--text-secondary); text-align:center; margin-bottom:20px;">
+                    Все игровые переменные будут возвращены к начальным значениям.
+                </p>
+                <div class="nav-buttons">
+                    <button class="nav-button" onclick="confirmReset()" style="background: var(--accent-red);">
+                        <span class="nav-text">Да</span>
+                    </button>
+                    <button class="nav-button" onclick="hideResetConfirm()">
+                        <span class="nav-text">Нет</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Переменные
+        let energy = 0;
+        let robots = 1;
+        let energyPerClick = 1;
+        let energyPerSecond = 0;
+
+        // Навигация экранов
+        function startGame() {
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            updateUI();
+            startLoop();
+        }
+        function showMainMenu() {
+            ['gameScreen','aboutScreen','settingsPanel','resetConfirm'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById('mainMenu').classList.remove('hidden');
+        }
+        function showAbout() {
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('aboutScreen').classList.remove('hidden');
+        }
+        function showSettings() {
+            document.getElementById('settingsPanel').classList.toggle('hidden');
+        }
+        function showBlog() {
+            alert('Блог разработчика скоро появится!');
+        }
+
+        // Сброс настроек
+        function showResetConfirm() {
+            document.getElementById('resetConfirm').classList.remove('hidden');
+        }
+        function hideResetConfirm() {
+            document.getElementById('resetConfirm').classList.add('hidden');
+        }
+        function confirmReset() {
+            energy = 0;
+            robots = 1;
+            energyPerClick = 1;
+            energyPerSecond = 0;
+            hideResetConfirm();
+            updateUI();
+            showMainMenu();
+            alert('Игра сброшена к заводским настройкам!');
+        }
+
+        // Игровой процесс
+        function collectEnergy() {
+            energy += energyPerClick;
+            updateUI();
+        }
+        function updateUI() {
+            document.getElementById('energy').textContent = Math.floor(energy);
+            document.getElementById('robots').textContent = robots;
+            document.getElementById('energyProduction').textContent =
+                `(+${energyPerSecond.toFixed(1)}/сек)`;
+        }
+        function startLoop() {
+            setInterval(() => {
+                energy += energyPerSecond;
+                updateUI();
+            }, 1000);
+        }
+        function showTab(tab) {
+            alert(`Вкладка "${tab}" будет добавлена позже!`);
+        }
+    </script>
+</body>
 </html>
