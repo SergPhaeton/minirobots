@@ -59,66 +59,67 @@
         </div>
 
         <div id="main-panel">
-            <div class="buildings-panel">
-                <div id="panel-btn" class="building-item">
-                    <div class="building-content">
-                        <span class="building-icon">☀️</span>
-                        <div class="building-info">
-                            <div class="building-name">Солн. панель</div>
-                            <div class="building-stats"><span id="panels-count">1</span> шт.</div>
-                            <div class="building-desc">
-                                Дает <span id="panel-production" class="highlight">0.63</span>/сек. 
-                                Стоимость: <span id="panel-cost" class="cost">10</span>⚡
-                            </div>
-                        </div>
-                    </div>
-                    <button class="demolish-btn">❎</button>
-                </div>
-
-                <div id="tree-btn" class="building-item">
-                    <div class="building-content">
-                        <span class="building-icon">🌳</span>
-                        <div class="building-info">
-                            <div class="building-name">Рубить дерево</div>
-                            <div class="building-desc">Стоимость: <span class="cost">100</span>⚡</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="charging-station-container" class="building-item">
-                    <div id="charging-station-btn" class="building-content">
-                        <span class="building-icon">🔋</span>
-                        <div class="building-info">
-                            <div class="building-name">Зарядная станция</div>
-                            <div class="building-stats"><span id="stations-count">0</span> шт.</div>
-                            <div class="building-desc">Стоимость: <span id="station-cost" class="cost">5</span>🌳</div>
-                        </div>
-                    </div>
-                    <button class="demolish-btn">❎</button>
-                </div>
-
-                <div id="laboratory-container" class="building-item">
-                    <div id="laboratory-btn" class="building-content">
-                        <span class="building-icon">🧬</span>
-                        <div class="building-info">
-                            <div class="building-name">Лаборатория</div>
-                            <div class="building-stats"><span id="laboratories-count">0</span> шт.</div>
-                            <div class="building-desc">
-                                Прирост знаний: <span class="highlight">+10.00%</span><br>
-                                Макс. знаний: <span class="highlight">+<span id="lab-knowledge-bonus">500</span></span><br>
-                                Стоимость: <span id="laboratory-cost" class="cost">25</span>🌳
-                            </div>
-                        </div>
-                    </div>
-                    <button class="demolish-btn">❎</button>
-                </div>
-            </div>
-
-            <div id="robot-progress-container" class="progress-container hidden">
-                <div class="progress-text">Строим робота...</div>
-                <div class="progress-bar"><div id="robot-progress-bar" class="progress-fill"></div></div>
-            </div>
+  <div class="buildings-panel">
+    <div id="panel-btn" class="building-item">
+      <div class="building-content">
+        <span class="building-icon">☀️</span>
+        <div class="building-info">
+          <div class="building-name">Солн. панель</div>
+          <div class="building-stats"><span id="panels-count">1</span> шт.</div>
+          <div class="building-desc">
+            Дает <span id="panel-production" class="highlight">0.63</span>/сек.
+            Стоимость: <span id="panel-cost" class="cost">10</span>⚡
+          </div>
         </div>
+      </div>
+      <button class="demolish-btn" data-type="panel">❎</button>
+    </div>
+
+    <div id="tree-btn" class="building-item">
+      <div class="building-content">
+        <span class="building-icon">🌳</span>
+        <div class="building-info">
+          <div class="building-name">Рубить дерево</div>
+          <div class="building-desc">Стоимость: <span class="cost">100</span>⚡</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="charging-station-container" class="building-item">
+      <div id="charging-station-btn" class="building-content">
+        <span class="building-icon">🔋</span>
+        <div class="building-info">
+          <div class="building-name">Зарядная станция</div>
+          <div class="building-stats"><span id="stations-count">0</span> шт.</div>
+          <div class="building-desc">Стоимость: <span id="station-cost" class="cost">5</span>🌳</div>
+        </div>
+      </div>
+      <button class="demolish-btn" data-type="station">❎</button>
+    </div>
+
+    <div id="laboratory-container" class="building-item">
+      <div id="laboratory-btn" class="building-content">
+        <span class="building-icon">🧬</span>
+        <div class="building-info">
+          <div class="building-name">Лаборатория</div>
+          <div class="building-stats"><span id="laboratories-count">0</span> шт.</div>
+          <div class="building-desc">
+            Прирост знаний: <span class="highlight">+10.00%</span><br>
+            Макс. знаний: <span class="highlight">+<span id="lab-knowledge-bonus">500</span></span><br>
+            Стоимость: <span id="laboratory-cost" class="cost">25</span>🌳
+          </div>
+        </div>
+      </div>
+      <button class="demolish-btn" data-type="laboratory">❎</button>
+    </div>
+  </div>
+
+  <div id="robot-progress-container" class="progress-container hidden">
+    <div class="progress-text">Строим робота...</div>
+    <div class="progress-bar"><div id="robot-progress-bar" class="progress-fill"></div></div>
+  </div>
+</div>
+
 
         <div id="robots-panel" class="panel hidden">
             <div class="resources-panel">
@@ -145,9 +146,22 @@
         </div>
 
        <div id="weather-panel" class="panel hidden">
-    ⛅️ Погода: <span id="weather-info">Загрузка...</span>
+    Погода: <span id="weather-info">Загрузка...</span>
     <br>
     Прогноз погоды: <span id="weather-forecast-text">Загрузка...</span>
+
+<br><br>
+<button id="back-button" class="nav-button">
+  <span class="nav-text">🔙 Назад</span>
+</button>
+
+
+
+<br>
+</div>
+</span>
+  </button>
+
 </div> 
 
 
@@ -177,5 +191,11 @@
     </div>
 
     <script src="game.js"></script>
+<script>
+  document.getElementById('back-button').addEventListener('click', () => {
+    location.reload();
+  });
+</script>
+
 </body>
 </html>

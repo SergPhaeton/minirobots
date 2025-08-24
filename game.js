@@ -120,6 +120,106 @@ const robProgBar = document.getElementById('robot-progress-bar');
 const btnExit = document.getElementById('btn-exit');
 const knowledgeText = document.getElementById('knowledge-text');
 
+document.addEventListener('DOMContentLoaded', () => {
+  // === МЕНЮ СНОСА ===
+  const demolishMenu = document.getElementById('demolish-menu');
+  let currentDemolishType = null;
+
+  // Показать меню — авторазмещение по экрану
+  function showDemolishMenu(buttonElem, type) {
+    currentDemolishType = type;
+    // Сначала показываем меню "невидимо", чтобы узнать размеры
+    demolishMenu.classList.remove('hidden');
+    demolishMenu.style.visibility = 'hidden';
+    demolishMenu.style.position = 'absolute';
+
+    const rect = buttonElem.getBoundingClientRect();
+    const menuWidth = demolishMenu.offsetWidth;
+    const menuHeight = demolishMenu.offsetHeight;
+    const padding = 8;
+
+    // По умолчанию располагаем слева от кнопки
+    let top = rect.top + window.scrollY;
+    let left = rect.left + window.scrollX - menuWidth - padding;
+
+    // Если слева не помещается — показываем справа от кнопки
+    if (left < 0) {
+      left = rect.right + window.scrollX + padding;
+      // Если меню вылезает за правый край — двигаем к правому краю окна
+      if (left + menuWidth > window.innerWidth) {
+        left = window.innerWidth - menuWidth - padding;
+      }
+    }
+
+    // По вертикали не позволяем меню вылезти за низ
+    if (top + menuHeight > window.innerHeight + window.scrollY) {
+      top = window.innerHeight + window.scrollY - menuHeight - padding;
+    }
+    if (top < padding) top = padding;
+
+    demolishMenu.style.top = `${top}px`;
+    demolishMenu.style.left = `${left}px`;
+    demolishMenu.style.visibility = 'visible';
+  }
+
+  // Скрыть меню
+  function hideDemolishMenu() {
+    demolishMenu.classList.add('hidden');
+    currentDemolishType = null;
+  }
+
+  // Удалить здание по типу
+  function demolishBuilding(type) {
+    switch(type) {
+      case 'panel':
+        if (typeof panels !== 'undefined' && panels > 0) panels--;
+        break;
+      case 'station':
+        if (typeof chargingStations !== 'undefined' && chargingStations > 0) chargingStations--;
+        break;
+      case 'laboratory':
+        if (typeof laboratories !== 'undefined' && laboratories > 0) laboratories--;
+        break;
+    }
+    if (typeof saveGame === 'function') saveGame();
+    if (typeof updateUI === 'function') updateUI();
+  }
+
+  // Обработчики кнопок ❎
+  document.querySelectorAll('.demolish-btn').forEach(btn => {
+    btn.addEventListener('click', event => {
+      const type = btn.getAttribute('data-type');
+      showDemolishMenu(btn, type);
+      event.stopPropagation();
+    });
+  });
+
+  // Кнопка “Да”
+  const demolishYesBtn = document.getElementById('demolish-yes');
+  if (demolishYesBtn) {
+    demolishYesBtn.addEventListener('click', () => {
+      demolishBuilding(currentDemolishType);
+      hideDemolishMenu();
+    });
+  }
+
+  // Кнопка “Нет”
+  const demolishNoBtn = document.getElementById('demolish-no');
+  if (demolishNoBtn) {
+    demolishNoBtn.addEventListener('click', () => {
+      hideDemolishMenu();
+    });
+  }
+
+  // Скрываем меню при клике вне его
+  document.addEventListener('click', event => {
+    if (demolishMenu && !demolishMenu.contains(event.target) && !event.target.classList.contains('demolish-btn')) {
+      hideDemolishMenu();
+    }
+  });
+});
+
+
 // === ФУНКЦИИ ПОГОДЫ ===
 function getWeatherDisplayName(weatherType) {
     const names = {
@@ -627,82 +727,115 @@ function gameLoop() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // === ЗАПУСК ИГРЫ ===
-    loadGame();
+   // === ЗАПУСК ИГРЫ ===
+loadGame();
 
-    // Если прогноз не загружен — генерируем новый
-    if (!forecastWeather || !forecastChangeTime) {
-        generateForecast();
-    }
-
+// Если прогноз не загружен — генерируем новый
+if (!forecastWeather || !forecastChangeTime) {
+    generateForecast();
+}
+    // после расчётов энергии и роботозавершения сборки, перед updateUI()
+    enforceSlotLimits();
     updateUI();
-    gameLoop();
+    checkAssistant();
 
-    // === ОБРАБОТЧИКИ КНОПОК ===
-    if (panelBtn) {
-        panelBtn.onclick = () => {
-            const cost = getNextPanelCost();
-            if (energy >= cost) {
-                energy -= cost;
-                panels++;
-                tick();
-                saveGame();
-                updateUI();
-                checkAssistant();
-            } else {
-                alert('Недостаточно энергии для панели!');
-            }
-        };
-    }
+updateUI();
+gameLoop();
 
-    if (treeBtn) {
-        treeBtn.onclick = () => {
-            if (energy >= 100) {
-                energy -= 100;
-                trees++;
-                tick();
-                saveGame();
-                updateUI();
-                checkAssistant();
-            } else {
-                alert('Недостаточно энергии для дерева!');
-            }
-        };
+// Функция проверки слотов и отключения лишних роботов
+function enforceSlotLimits() {
+    const maxSlots = chargingStations * 2;
+    if (robots > maxSlots) {
+        let excess = robots - maxSlots;
+        // Сначала отключаем свободных роботов
+        let removed = Math.min(freeRobots, excess);
+        freeRobots -= removed;
+        excess -= removed;
+        // Затем лесорубов
+        removed = Math.min(lumberjackRobots, excess);
+        lumberjackRobots -= removed;
+        excess -= removed;
+        // Затем учёных
+        removed = Math.min(scientistRobots, excess);
+        scientistRobots -= removed;
+        // Обновляем общее число роботов
+        robots = maxSlots;
+        robotProgress = 0;
+        tick();
+        alert('Превышено количество мест. Лишние роботы отключены.');
     }
+}
 
-    const stationBuildBtn = document.getElementById('charging-station-btn');
-    if (stationBuildBtn) {
-        stationBuildBtn.onclick = () => {
-            const cost = getNextStationCost();
-            if (trees >= cost) {
-                trees -= cost;
-                chargingStations++;
-                tick();
-                saveGame();
-                updateUI();
-                checkAssistant();
-            } else {
-                alert('Недостаточно дерева для станции!');
-            }
-        };
-    }
+// === ОБРАБОТЧИКИ КНОПОК ===
+if (panelBtn) {
+    panelBtn.onclick = () => {
+        const cost = getNextPanelCost();
+        if (energy >= cost) {
+            energy -= cost;
+            panels++;
+            tick();
+            saveGame();
+            enforceSlotLimits();
+            updateUI();
+            checkAssistant();
+        } else {
+            alert('Недостаточно энергии для панели!');
+        }
+    };
+}
 
-    const laboratoryBtn = document.getElementById('laboratory-btn');
-    if (laboratoryBtn) {
-        laboratoryBtn.onclick = () => {
-            const cost = getNextLaboratoryCost();
-            if (trees >= cost) {
-                trees -= cost;
-                laboratories++;
-                tick();
-                saveGame();
-                updateUI();
-                checkAssistant();
-            } else {
-                alert('Недостаточно дерева для лаборатории!');
-            }
-        };
-    }
+if (treeBtn) {
+    treeBtn.onclick = () => {
+        if (energy >= 100) {
+            energy -= 100;
+            trees++;
+            tick();
+            saveGame();
+            enforceSlotLimits();
+            updateUI();
+            checkAssistant();
+        } else {
+            alert('Недостаточно энергии для дерева!');
+        }
+    };
+}
+
+const stationBuildBtn = document.getElementById('charging-station-btn');
+if (stationBuildBtn) {
+    stationBuildBtn.onclick = () => {
+        const cost = getNextStationCost();
+        if (trees >= cost) {
+            trees -= cost;
+            chargingStations++;
+            tick();
+            saveGame();
+            enforceSlotLimits();
+            updateUI();
+            checkAssistant();
+        } else {
+            alert('Недостаточно дерева для станции!');
+        }
+    };
+}
+
+const laboratoryBtn = document.getElementById('laboratory-btn');
+if (laboratoryBtn) {
+    laboratoryBtn.onclick = () => {
+        const cost = getNextLaboratoryCost();
+        if (trees >= cost) {
+            trees -= cost;
+            laboratories++;
+            tick();
+            saveGame();
+            enforceSlotLimits();
+            updateUI();
+            checkAssistant();
+        } else {
+            alert('Недостаточно дерева для лаборатории!');
+        }
+    };
+}
+
 
     // === НАВИГАЦИОННЫЕ КНОПКИ ===
     const mainNavBtn = document.getElementById('main-nav-btn');

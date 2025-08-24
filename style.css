@@ -411,3 +411,10 @@ html, body {
         padding: 12px;
     }
 }
+
+#weather-panel .nav-button {
+  width: 100%;
+  justify-content: center;
+}
+
+
