@@ -1,451 +1,411 @@
 ﻿:root {
-  --bg: #162033;
-  --green: #57A773;
-  --green-pressed: #469062;
-  --text: #E2E8F0;
-  --muted: #2F4F4F;
+    /* Темная тема */
+    --bg-primary: #1f2028;
+    --bg-secondary: #2a2d3a;
+    --bg-card: #353843;
+    --text-primary: #ffffff;
+    --text-secondary: #b8bcc8;
+    --text-muted: #7a7d8a;
+    --accent-blue: #4a9eff;
+    --accent-yellow: #ffd700;
+    --accent-green: #32d74b;
+    --accent-red: #ff5555;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 * {
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 html, body {
-  height: 100%;
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font: 16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Arial, "Noto Sans", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    overflow-x: hidden;
 }
 
-.visually-hidden {
-  position: absolute !important;
-  clip: rect(1px, 1px, 1px, 1px);
-  padding: 0;
-  border: 0;
-  height: 1px;
-  width: 1px;
-  overflow: hidden;
+/* Основной контейнер */
+.game-container {
+    min-height: 100vh;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-/* Общий контейнер экрана */
-.screen {
-  min-height: 100dvh;
-  padding: 24px;
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-  gap: 16px;
-  flex-direction: column;
+/* Заголовок */
+.game-header {
+    text-align: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
 }
 
-/* Вертикальное меню */
-.menu {
-  width: 100%;
-  max-width: none;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin-bottom: 16px;
+.game-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
-/* Кнопки */
-.btn {
-  appearance: none;
-  display: block;
-  width: 100%;
-  padding: 8px 25px;
-  border-radius: 16px;
-  border: 2px solid var(--green);
-  background: transparent;
-  color: var(--green);
-  font-weight: 300;
-  font-size: 18px;
-  letter-spacing: 0.3px;
-  cursor: pointer;
-  transition: transform 0.06s ease, background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
-  outline: none;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
+/* Панель ресурсов */
+.resources-panel {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid var(--border-color);
 }
 
-.btn-primary {
-  background: var(--green);
-  color: #183834;
-  border-color: var(--green);
+.resource-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
 }
 
-.btn-secondary {
-  background: transparent;
-  color: var(--green);
-  border-color: var(--green);
+.resource-item:last-child {
+    margin-bottom: 0;
 }
 
-.btn:active {
-  transform: translateY(1px) scale(0.995);
+.resource-icon {
+    font-size: 20px;
+    width: 24px;
+    text-align: center;
 }
 
-.btn-primary:active {
-  background: var(--green-pressed);
-  border-color: var(--green-pressed);
+.resource-info {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px;
 }
 
-/* Скрытие */
-.hidden {
-  display: none !important;
+.resource-label {
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 14px;
 }
 
-/* Экран "Об игре" */
-.about {
-  width: min(640px, 92vw);
-  margin: 0;
+.resource-value {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 14px;
 }
 
-.about__inner {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 16px;
-  border: 1px solid #468D77;
-  border-radius: 12px;
-  background: rgba(65, 120, 109, 0.12);
+.production-info {
+    color: var(--text-muted);
+    font-size: 12px;
 }
 
-/* Стили для Popup */
-#popup {
-  background: #eaf6f2;
-  color: #204D45;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(36, 61, 20, 0.16);
-  margin-top: 24px;
+/* Навигационные кнопки */
+.nav-buttons {
+    display: flex;
+    gap: 12px;
 }
 
-#popup div {
-  color: #204D45;
-}
-
-#popup button.btn-primary {
-  background: var(--green);
-  color: #183834;
-  border-color: var(--green);
-}
-
-#popup button.btn-secondary {
-  background: transparent;
-  color: var(--green);
-  border-color: var(--green);
-}
-
-/* Полноэкранное Popup */
-.fullscreen-popup {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(22, 32, 51, 0.94);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  padding: 24px;
-}
-
-.fullscreen-popup.hidden {
-  display: none;
-}
-
-.popup-content {
-  background: #24443a;
-  border-radius: 16px;
-  max-width: 360px;
-  width: 100%;
-  padding: 20px;
-  color: var(--text);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.popup-content img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 12px;
-  object-fit: cover;
-}
-
-.popup-text {
-  font-size: 18px;
-  text-align: center;
-  white-space: pre-wrap;
-}
-
-/* Typewriter (About) */
-.type-line {
-  margin: 8px 0 12px 0;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 16px;
-  letter-spacing: 0.02em;
-  white-space: pre-wrap;
-  min-height: 1.5em;
-}
-
-.type-cursor {
-  display: inline-block;
-  width: 0.6ch;
-  color: var(--green);
-  line-height: 1;
-  animation: blink 1s steps(1, end) infinite;
-  vertical-align: -2px;
-}
-
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  50.01%, 100% { opacity: 0; }
-}
-
-/* ----------- MINI‑BOT ассистент ----------- */
-.mini-bot {
-  position: fixed;
-  bottom: 22px;
-  right: 24px;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  z-index: 1500;
-  display: none; /* СКРЫТ ПО УМОЛЧАНИЮ! */
-}
-
-/* Бот теперь БОЛЬШЕ — 120x120px */
-.mini-bot img,
-.mini-bot-avatar {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 50%;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
-  background: #304d3e;
-  border: 3px solid var(--green);
-  flex-shrink: 0;
-  display: block;
-  margin-left: 16px; /* отступит от пузырька */
-}
-
-.mini-bot-bubble {
-  background: #fffbe6;
-  color: #273033;
-  border: 2px solid #ffd700;
-  border-radius: 20px;
-  padding: 20px 28px;
-  margin-left: 0;
-  font-size: 1.22em;
-  max-width: 300px;
-  box-shadow: 0 2px 20px rgba(0,0,0,0.13);
-  position: relative;
-  min-height: 40px;
-  display: flex;
-  align-items: center;
-  word-break: break-word;
-}
-
-/* Хвостик пузыря теперь справа (к ботику) */
-.mini-bot-bubble::after {
-  content: '';
-  position: absolute;
-  right: -22px;
-  bottom: 32px;
-  width: 0;
-  height: 0;
-  border-top: 14px solid transparent;
-  border-bottom: 14px solid transparent;
-  border-left: 22px solid #fffbe6;
-  filter: drop-shadow(1px 0 3px #ffd70066);
-}
-
-/* Адаптив для bot на маленьких экранах */
-@media (max-width: 650px) {
-  .mini-bot {
-    right: 8px;
-    bottom: 10px;
-  }
-  
-  .mini-bot-bubble {
-    max-width: 150px;
-    font-size: 0.95em;
-    padding: 8px 12px;
-  }
-}
-
-/* Небольшие адаптивные правки */
-@media (min-width: 768px) {
-  .btn {
-    font-size: 19px;
-    padding: 18px 20px;
-  }
-}
-
-.achievement-top-btn {
-  position: fixed;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2000;
-  font-size: 1.25em;
-  padding: 20px 38px;
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.20);
-}
-
-@media (max-width: 600px) {
-  .achievement-top-btn {
-    font-size: 1em;
-    padding: 12px 14px;
-    border-radius: 13px;
-  }
-}
-
-/* Универсальная раскраска для всех ресурсов: левая часть — основной цвет, хвост — приглушённый */
-.resource-line {
-  display: flex;
-  justify-content: space-between;
-  font-weight: 300;
-}
-
-
-.resource-line .resource-lead { color: var(--text); }
-.resource-line .resource-tail { color: var(--text); }
-/* Усиление для строки энергии на случай переопределений */
-#energy-text .resource-tail { color: var(--muted) !important; }
-
-.demolish-trigger {
-  cursor: pointer;
-  margin-left: 8px;
-  user-select: none;
-}
-
-.demolish-menu {
-  position: absolute;
-  background: var(--bg);
-  color: var(--text);
-  border: 1px solid var(--green);
-  border-radius: 8px;
-  padding: 12px 16px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
-  display: none;
-  font-size: 16px;
-  white-space: nowrap;
-}
-
-.demolish-menu button {
-  background: var(--green);
-  color: #183834;
-  border: none;
-  border-radius: 8px;
-  padding: 6px 14px;
-  margin: 0 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.2s ease;
-}
-
-.demolish-menu button:hover {
-  background: var(--green-pressed);
-}
-
-/* --- Стили для кнопок назначения роботов --- */
-.job-btn {
-  font-weight: 600;
-  font-size: 1.4em;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  background: #469062 !important;
-  color: #fff;
-  transition: background 0.16s, transform 0.11s, box-shadow 0.14s;
-  box-shadow: 0 1px 4px rgba(32, 85, 70, 0.09);
-  outline: none;
-  user-select: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.job-plus {
-  background: #469062 !important;
-}
-
-.job-minus {
-  background: #469062 !important;
-}
-
-.job-btn:hover,
-.job-btn:focus {
-  transform: scale(1.08);
-  box-shadow: 0 3px 12px rgba(30, 80, 60, 0.14);
-}
-
-.job-plus:hover,
-.job-plus:focus {
-  background: #6bb584 !important;
-}
-
-.job-minus:hover,
-.job-minus:focus {
-  background: #3a7a52 !important;
-}
-
-.job-btn:active {
-  transform: scale(0.96);
-  filter: brightness(0.96);
-}
-
-html, body, .screen {
-  background: #162033 !important;
-}
-
-/* Добавить в CSS */
-.nav-btn {
-    background: linear-gradient(135deg, #4a90e2, #357abd);
+.nav-button {
+    flex: 1;
+    background: var(--accent-blue);
     border: none;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    transition: all 0.2s ease;
+    opacity: 0.9;
 }
 
-.nav-btn:hover {
-    background: linear-gradient(135deg, #357abd, #2968a3);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(74, 144, 226, 0.4);
+.nav-button:hover {
+    opacity: 1;
+    transform: translateY(-1px);
 }
 
-.nav-btn:active {
+.nav-button:active {
     transform: translateY(0);
 }
 
-.btn-robots {
-  background: linear-gradient(135deg, #4ea2e2, #5eb7ff);
-  color: #fff;
-  border: none;
-  font-weight: 700;
-  box-shadow: 0 3px 18px rgba(80,160,255,0.18);
-  transition: background 0.15s, color 0.15s, transform 0.1s;
+.nav-icon {
+    font-size: 16px;
 }
-.btn-robots:hover, .btn-robots:focus {
-  background: linear-gradient(135deg, #2492e7, #189eff);
-  color: #fff;
-  transform: translateY(-1px) scale(1.03);
+
+.nav-text {
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
 }
-.btn-robots:active {
-  background: #2492e7;
-  color: #fff;
-  transform: translateY(1px) scale(0.98);
+
+/* Панель построек */
+.buildings-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.building-item {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.building-item:hover {
+    background: rgba(74, 158, 255, 0.1);
+    border-color: var(--accent-blue);
+}
+
+.building-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    cursor: pointer;
+}
+
+.building-icon {
+    font-size: 20px;
+    width: 24px;
+    text-align: center;
+}
+
+.building-info {
+    flex: 1;
+}
+
+.building-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.building-stats {
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.building-desc {
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.3;
+}
+
+.highlight {
+    color: var(--accent-yellow);
+    font-weight: 600;
+}
+
+.cost {
+    color: var(--accent-blue);
+    font-weight: 600;
+}
+
+/* Кнопка удаления */
+.demolish-btn {
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.demolish-btn:hover {
+    background: rgba(50, 215, 75, 0.3);
+    transform: scale(1.1);
+}
+
+/* Прогресс-бар */
+.progress-container {
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.progress-text {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent-blue);
+    transition: width 0.3s ease;
+    border-radius: 3px;
+}
+
+/* Кнопка выхода */
+.exit-container {
+    margin-top: auto;
+    padding-top: 16px;
+}
+
+.exit-btn {
+    width: 100%;
+    background: transparent;
+    border: 2px solid var(--accent-blue);
+    border-radius: 10px;
+    padding: 12px;
+    color: var(--accent-blue);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.exit-btn:hover {
+    background: var(--accent-blue);
+    color: white;
+}
+
+/* Меню сноса */
+.demolish-menu {
+    position: absolute;
+    background: var(--bg-secondary);
+    border: 1px solid var(--accent-blue);
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: var(--shadow);
+    z-index: 1000;
+    font-size: 12px;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.demolish-menu button {
+    background: var(--accent-blue);
+    border: none;
+    border-radius: 4px;
+    padding: 4px 12px;
+    margin: 0 4px;
+    color: white;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.demolish-menu button:hover {
+    opacity: 0.8;
+}
+
+/* Помощник */
+.assistant-panel {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 320px;
+    width: 90%;
+    background: var(--bg-secondary);
+    border: 2px solid #32d74b;
+    border-radius: 12px;
+    .assistant-header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.assistant-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 2px solid #32d74b; /* зелёная обводка */
+}
+
+    padding: 16px;
+    box-shadow: var(--shadow);
+    z-index: 2000;
+    cursor: pointer;
+}
+
+.assistant-content {
+    color: #32d74b;
+}
+
+.assistant-text {
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* Утилиты */
+.hidden {
+    display: none !important;
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+    .game-container {
+        padding: 12px;
+        gap: 12px;
+    }
+    
+    .nav-button {
+        padding: 12px 14px;
+    }
+    
+    .nav-text {
+        font-size: 13px;
+    }
+    
+    .building-item {
+        padding: 14px;
+    }
+    
+    .building-name {
+        font-size: 13px;
+    }
+    
+    .building-desc {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 360px) {
+    .game-container {
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .resources-panel {
+        padding: 12px;
+    }
+    
+    .resource-icon,
+    .building-icon {
+        font-size: 18px;
+    }
+    
+    .nav-button {
+        padding: 10px 12px;
+    }
+    
+    .building-item {
+        padding: 12px;
+    }
 }
