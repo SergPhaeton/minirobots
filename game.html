@@ -1,5 +1,4 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -9,14 +8,11 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <!-- Основной экран игры -->
     <div class="game-container">
-        <!-- Заголовок -->
         <div class="game-header">
             <h1 class="game-title">Mini Robots</h1>
         </div>
 
-        <!-- Блок ресурсов -->
         <div class="resources-panel">
             <div class="resource-item">
                 <span class="resource-icon">⚡</span>
@@ -25,16 +21,14 @@
                     <span id="energy-text" class="resource-value">0 / 5000 (0.00/сек)</span>
                 </div>
             </div>
-
             <div class="resource-item">
                 <span class="resource-icon">🌳</span>
                 <div class="resource-info">
                     <span class="resource-label">Дерево:</span>
                     <span id="trees-count" class="resource-value">0</span>
-                    <span id="tree-production" class="production-info"> (0.00/сек)</span>
+                    <span id="tree-production" class="production-info">(0.00/сек)</span>
                 </div>
             </div>
-
             <div class="resource-item">
                 <span class="resource-icon">📚</span>
                 <div class="resource-info">
@@ -42,136 +36,143 @@
                     <span id="knowledge-text" class="resource-value">0 / 0 (0.00/сек)</span>
                 </div>
             </div>
-
             <div class="resource-item">
                 <span class="resource-icon">🤖</span>
                 <div class="resource-info">
                     <span class="resource-label">Роботы:</span>
                     <span id="robots-count" class="resource-value">0</span>
-                    <span id="max-robots" class="production-info"> / 0</span>
+                    <span id="max-robots" class="production-info">/ 0</span>
                 </div>
             </div>
         </div>
 
-        <!-- Навигационные кнопки -->
         <div class="nav-buttons">
             <button id="robots-nav-btn" class="nav-button">
-                <span class="nav-icon">🤖</span>
-                <span class="nav-text">Роботы</span>
+                <span class="nav-icon">🤖</span><span class="nav-text">Роботы</span>
             </button>
             <button id="knowledge-nav-btn" class="nav-button">
-                <span class="nav-icon">📚</span>
-                <span class="nav-text">Знания</span>
+                <span class="nav-icon">📚</span><span class="nav-text">Знания</span>
+            </button>
+            <button id="weather-nav-btn" class="nav-button">
+                <span class="nav-icon">⛅️</span><span class="nav-text">Погода</span>
             </button>
         </div>
 
-        <!-- Блок построек -->
-        <div class="buildings-panel">
-            <!-- Солнечная панель -->
-            <div class="building-item">
-                <div class="building-content" id="panel-btn">
-                    <span class="building-icon">☀️</span>
-                    <div class="building-info">
-                        <div class="building-name">Солн. панель</div>
-                        <div class="building-stats">
-                            <span id="panels-count">1</span> шт.
+        <div id="main-panel">
+            <div class="buildings-panel">
+                <div id="panel-btn" class="building-item">
+                    <div class="building-content">
+                        <span class="building-icon">☀️</span>
+                        <div class="building-info">
+                            <div class="building-name">Солн. панель</div>
+                            <div class="building-stats"><span id="panels-count">1</span> шт.</div>
+                            <div class="building-desc">
+                                Дает <span id="panel-production" class="highlight">0.63</span>/сек. 
+                                Стоимость: <span id="panel-cost" class="cost">10</span>⚡
+                            </div>
                         </div>
-                        <div class="building-desc">
-                            Дает <span class="highlight">0.63</span>/сек. Стоимость: 
-                            <span id="panel-cost" class="cost">10</span>⚡
+                    </div>
+                    <button class="demolish-btn">🗑️</button>
+                </div>
+
+                <div id="tree-btn" class="building-item">
+                    <div class="building-content">
+                        <span class="building-icon">🌳</span>
+                        <div class="building-info">
+                            <div class="building-name">Рубить дерево</div>
+                            <div class="building-desc">Стоимость: <span class="cost">100</span>⚡</div>
                         </div>
                     </div>
                 </div>
-                <button class="demolish-btn">❎</button>
+
+                <div id="charging-station-container" class="building-item">
+                    <div id="charging-station-btn" class="building-content">
+                        <span class="building-icon">🔋</span>
+                        <div class="building-info">
+                            <div class="building-name">Зарядная станция</div>
+                            <div class="building-stats"><span id="stations-count">0</span> шт.</div>
+                            <div class="building-desc">Стоимость: <span id="station-cost" class="cost">5</span>🌳</div>
+                        </div>
+                    </div>
+                    <button class="demolish-btn">🗑️</button>
+                </div>
+
+                <div id="laboratory-container" class="building-item">
+                    <div id="laboratory-btn" class="building-content">
+                        <span class="building-icon">🧬</span>
+                        <div class="building-info">
+                            <div class="building-name">Лаборатория</div>
+                            <div class="building-stats"><span id="laboratories-count">0</span> шт.</div>
+                            <div class="building-desc">
+                                Прирост знаний: <span class="highlight">+10.00%</span><br>
+                                Макс. знаний: <span class="highlight">+<span id="lab-knowledge-bonus">500</span></span><br>
+                                Стоимость: <span id="laboratory-cost" class="cost">25</span>🌳
+                            </div>
+                        </div>
+                    </div>
+                    <button class="demolish-btn">🗑️</button>
+                </div>
             </div>
 
-            <!-- Рубить дерево -->
-            <div class="building-item" id="tree-btn">
-                <div class="building-content">
-                    <span class="building-icon">🌳</span>
-                    <div class="building-info">
-                        <div class="building-name">Рубить дерево</div>
-                        <div class="building-desc">
-                            Стоимость: <span class="cost">100</span>⚡
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Зарядная станция -->
-            <div class="building-item" id="charging-station-container">
-                <div class="building-content" id="charging-station-btn">
-                    <span class="building-icon">🔋</span>
-                    <div class="building-info">
-                        <div class="building-name">Зарядная станция</div>
-                        <div class="building-stats">
-                            <span id="stations-count">0</span> шт.
-                        </div>
-                        <div class="building-desc">
-                            Стоимость: <span id="station-cost" class="cost">5</span>🌳
-                        </div>
-                    </div>
-                </div>
-                <button class="demolish-btn">❎</button>
-            </div>
-
-            <!-- Лаборатория -->
-            <div class="building-item" id="laboratory-container">
-                <div class="building-content" id="laboratory-btn">
-                    <span class="building-icon">🧬</span>
-                    <div class="building-info">
-                        <div class="building-name">Лаборатория</div>
-                        <div class="building-stats">
-                            <span id="laboratories-count">0</span> шт.
-                        </div>
-                        <div class="building-desc">
-                            Прирост знаний: <span class="highlight">+10.00%</span><br>
-                            Макс. знаний: <span class="highlight">+<span id="lab-knowledge-bonus">500</span></span><br>
-                            Стоимость: <span id="laboratory-cost" class="cost">25</span>🌳
-                        </div>
-                    </div>
-                </div>
-                <button class="demolish-btn">❎</button>
+            <div id="robot-progress-container" class="progress-container hidden">
+                <div class="progress-text">Строим робота...</div>
+                <div class="progress-bar"><div id="robot-progress-bar" class="progress-fill"></div></div>
             </div>
         </div>
 
-        <!-- Прогресс строительства робота -->
-        <div id="robot-progress-container" class="progress-container hidden">
-            <div class="progress-text">Строим робота...</div>
-            <div class="progress-bar">
-                <div id="robot-progress-bar" class="progress-fill"></div>
+        <div id="robots-panel" class="panel hidden">
+            <div class="resources-panel">
+                <div class="resource-item">
+                    <span class="resource-icon">🤖</span>
+                    <div class="resource-info">
+                        <span class="resource-label">Свободные роботы:</span>
+                        <span class="resource-value">Здесь будет управление роботами</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Скрытые элементы для совместимости -->
-        <div id="knowledge-display" style="display: none;"></div>
-        <div id="robots-container" style="display: none;"></div>
-        <div id="knowledge-nav-container" style="display: none;"></div>
-        <div id="robots-nav-container" style="display: none;"></div>
+        <div id="knowledge-panel" class="panel hidden">
+            <div class="resources-panel">
+                <div class="resource-item">
+                    <span class="resource-icon">📚</span>
+                    <div class="resource-info">
+                        <span class="resource-label">Исследования:</span>
+                        <span class="resource-value">Здесь будут исследования</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <!-- Кнопка выхода -->
+       <div id="weather-panel" class="panel hidden">
+    ⛅️ Погода: <span id="weather-info">Загрузка...</span>
+    <br>
+    Прогноз погоды: <span id="weather-forecast-text">Загрузка...</span>
+</div>
+
+                </div>
+            </div>
+        </div>
+
         <div class="exit-container">
             <button id="btn-exit" class="exit-btn">Сохранить и выйти</button>
         </div>
     </div>
 
-    <!-- Меню сноса здания -->
-    <div id="demolish-menu" class="demolish-menu" style="display: none;">
+    <div id="demolish-menu" class="demolish-menu hidden">
         Снести здание?
         <button id="demolish-yes">Да</button>
         <button id="demolish-no">Нет</button>
     </div>
 
-    <!-- Помощник -->
-   <div id="assistant-panel" class="assistant-panel hidden">
-    <div class="assistant-header">
-        <img src="images/assistant/assistant.png" alt="Робот" class="assistant-avatar">
+    <div id="assistant-panel" class="assistant-panel hidden">
+        <div class="assistant-header">
+            <img src="images/assistant/assistant.png" class="assistant-avatar" alt="Робот">
+        </div>
+        <div class="assistant-content">
+            <div id="assistant-text" class="assistant-text"></div>
+        </div>
     </div>
-    <div class="assistant-content">
-        <div id="assistant-text" class="assistant-text"></div>
-    </div>
-</div>
-
 
     <script src="game.js"></script>
 </body>

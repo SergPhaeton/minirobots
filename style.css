@@ -45,7 +45,7 @@ html, body {
 }
 
 .game-title {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
     color: var(--text-primary);
 }
@@ -70,7 +70,7 @@ html, body {
 }
 
 .resource-icon {
-    font-size: 20px;
+    font-size: 22px;
     width: 24px;
     text-align: center;
 }
@@ -97,7 +97,7 @@ html, body {
 
 .production-info {
     color: var(--text-muted);
-    font-size: 12px;
+    font-size: 14px;
 }
 
 /* Навигационные кнопки */
@@ -131,13 +131,13 @@ html, body {
 }
 
 .nav-icon {
-    font-size: 16px;
+    font-size: 20px;
 }
 
 .nav-text {
     color: white;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 /* Панель построек */
@@ -349,7 +349,7 @@ html, body {
 }
 
 .assistant-text {
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1.4;
 }
 
@@ -370,7 +370,7 @@ html, body {
     }
     
     .nav-text {
-        font-size: 13px;
+        font-size: 15px;
     }
     
     .building-item {
@@ -378,11 +378,11 @@ html, body {
     }
     
     .building-name {
-        font-size: 13px;
+        font-size: 15px;
     }
     
     .building-desc {
-        font-size: 11px;
+        font-size: 13px;
     }
 }
 
