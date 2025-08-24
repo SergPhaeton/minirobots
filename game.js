@@ -11,6 +11,7 @@
 
 // == ЗВУКОВОЙ ТИК ==
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
 function tick() {
     const o = audioCtx.createOscillator();
     const g = audioCtx.createGain();
@@ -27,9 +28,25 @@ function tick() {
 
 // == ФУНКЦИЯ ПОЛНОГО СБРОСА ИГРЫ ==
 function resetGame() {
-    localStorage.clear();
-    window.location.reload(true);
+    try {
+        // Полная очистка localStorage
+        localStorage.clear();
+        
+        // Принудительная очистка известных ключей
+        localStorage.removeItem('minirobots-save');
+        localStorage.removeItem('shownAssistant');
+        
+        // Перезагрузка с полной очисткой кэша
+        window.location.reload(true);
+        
+    } catch (error) {
+        console.error('Ошибка при сбросе игры:', error);
+        window.location.reload(true);
+    }
 }
+
+
+
 
 // === КОНСТАНТЫ ИГРЫ ===
 const MAX_ENERGY = 5000;
@@ -61,8 +78,8 @@ const WEATHER_PRODUCTION_RATES = {
     [WEATHER_TYPES.RAINY]: 0.315
 };
 
-const MIN_WEATHER_DURATION = 3 * 60 * 60;
-const MAX_WEATHER_DURATION = 9 * 60 * 60;
+const MIN_WEATHER_DURATION = 1 * 60 * 60;
+const MAX_WEATHER_DURATION = 6 * 60 * 60;
 
 // === ИГРОВЫЕ ПЕРЕМЕННЫЕ ===
 let energy = 0;
@@ -330,26 +347,32 @@ function loadGame() {
     try {
         const savedData = localStorage.getItem('minirobots-save');
         if (!savedData) {
-            energy = 0;
-            panels = 1;
-            trees = 0;
-            chargingStations = 0;
-            robots = 0;
-            robotProgress = 0;
-            lastUpdate = Date.now();
-            treeButtonUnlocked = false;
-            freeRobots = 0;
-            lumberjackRobots = 0;
-            laboratories = 0;
-            knowledge = 0;
-            scientistRobots = 0;
-            maxKnowledge = 0;
-            currentWeather = WEATHER_TYPES.SUNNY;
-            weatherTimeRemaining = generateRandomWeatherDuration();
-            forecastWeather = null;
-            forecastChangeTime = null;
-            return;
-        }
+    energy = 0;
+    panels = 1;
+    trees = 0;
+    chargingStations = 0;
+    robots = 0;
+    robotProgress = 0;
+    lastUpdate = Date.now();
+    treeButtonUnlocked = false;
+    freeRobots = 0;
+    lumberjackRobots = 0;
+    laboratories = 0;
+    knowledge = 0;
+    scientistRobots = 0;
+    maxKnowledge = 0;
+    if (!savedData) {
+    // ...инициализация всех игровых переменных...
+    // Случайная начальная погода
+    const weatherOptions = Object.values(WEATHER_TYPES);
+    currentWeather = weatherOptions[Math.floor(Math.random() * weatherOptions.length)];
+    weatherTimeRemaining = generateRandomWeatherDuration();
+    forecastWeather = null;
+    forecastChangeTime = null;
+    return;
+}
+}
+
 
         const data = JSON.parse(savedData);
         energy = data.energy || 0;
@@ -441,13 +464,14 @@ function updateUI() {
     }
 
     // Текущая погода
-    const weatherInfoElem = document.getElementById('weather-info');
-    if (weatherInfoElem) {
-        const currentProduction = getCurrentPanelProduction();
-        const baseProduction = PANEL_PRODUCTION;
-        const percentage = Math.round((currentProduction / baseProduction) * 100);
-        weatherInfoElem.textContent = `${getWeatherDisplayName(currentWeather)} - ${currentProduction.toFixed(2)}/сек (${percentage}%) - До смены: ${formatTimeRemaining(weatherTimeRemaining)}`;
-    }
+const weatherInfoElem = document.getElementById('weather-info');
+if (weatherInfoElem) {
+    const currentProduction = getCurrentPanelProduction();
+    const baseProduction = PANEL_PRODUCTION;
+    const percentage = Math.round((currentProduction / baseProduction) * 100);
+    weatherInfoElem.textContent = `${getWeatherDisplayName(currentWeather)} — ${currentProduction.toFixed(2)}/сек (${percentage}%)`;
+}
+
 
     // Прогноз погоды
     const forecastTextElem = document.getElementById('weather-forecast-text');

@@ -217,7 +217,7 @@
             alert('Блог разработчика скоро появится!');
         }
 
-        // Сброс настроек
+        // Сброс настроек - ИСПРАВЛЕННАЯ ФУНКЦИЯ
         function showResetConfirm() {
             document.getElementById('resetConfirm').classList.remove('hidden');
         }
@@ -225,14 +225,31 @@
             document.getElementById('resetConfirm').classList.add('hidden');
         }
         function confirmReset() {
-            energy = 0;
-            robots = 1;
-            energyPerClick = 1;
-            energyPerSecond = 0;
-            hideResetConfirm();
-            updateUI();
-            showMainMenu();
-            alert('Игра сброшена к заводским настройкам!');
+            try {
+                // Полная очистка localStorage
+                localStorage.clear();
+                
+                // Также очищаем локальные переменные этого файла
+                energy = 0;
+                robots = 1;
+                energyPerClick = 1;
+                energyPerSecond = 0;
+                
+                hideResetConfirm();
+                updateUI();
+                showMainMenu();
+                
+                alert('Игра полностью сброшена! Все данные очищены.');
+                
+                // Перезагружаем страницу для полной очистки
+                setTimeout(() => {
+                    window.location.reload(true);
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Ошибка при сбросе игры:', error);
+                alert('Произошла ошибка при сбросе. Попробуйте обновить страницу.');
+            }
         }
 
         // Игровой процесс
