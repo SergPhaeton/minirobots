@@ -25,28 +25,26 @@ function tick() {
     g.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
     o.stop(now + 0.045);
 }
-
 // == ФУНКЦИЯ ПОЛНОГО СБРОСА ИГРЫ ==
 function resetGame() {
+    console.log('resetGame вызвана');
     try {
-        // Полная очистка localStorage
-        localStorage.clear();
-        
-        // Принудительная очистка известных ключей
         localStorage.removeItem('minirobots-save');
         localStorage.removeItem('shownAssistant');
-        
-        // Перезагрузка с полной очисткой кэша
         window.location.reload(true);
-        
     } catch (error) {
         console.error('Ошибка при сбросе игры:', error);
         window.location.reload(true);
     }
 }
 
-
-
+// Показывает подтверждение сброса и вызывает resetGame()
+function showResetConfirm() {
+    const confirmed = confirm('Вы уверены, что хотите полностью сбросить игру и потерять весь прогресс?');
+    if (confirmed) {
+        resetGame();
+    }
+}
 
 // === КОНСТАНТЫ ИГРЫ ===
 const MAX_ENERGY = 5000;
@@ -90,6 +88,7 @@ let robots = 0;
 let robotProgress = 0;
 let lastUpdate = Date.now();
 let treeButtonUnlocked = false;
+let labUnlocked = false;
 let freeRobots = 0;
 let lumberjackRobots = 0;
 let laboratories = 0;
@@ -284,7 +283,7 @@ const assistantMessages = [
     { id: 'energy-10', threshold: { energy: 10 }, text: ['Вы можете собрать из обломков еще одну солнечную панель. Нажмите кнопку ☀️ ниже. Зарядка пойдет быстрее.'] },
     { id: 'energy-20', threshold: { energy: 100 }, text: ['Чем больше панелей из обломков вы собрали, тем сложнее находить новые запчасти. Тем больше энергии вы тратите на то, чтобы построить еще одну солнечную панель. В конце концов это все окупится стократно.'] },
     { id: 'energy-30', threshold: { energy: 30 }, text: ['Поблизости есть лес. Теперь, если вы будете достаточно заряжены - можете рубить дерево. Оно потребуется нам в дальнейшем.'] },
-    { id: 'panels-20', threshold: { panels: 20 }, text: ['20 солнечных панелей заряжают батарею! (имитирую радость на лице)'] },
+    { id: 'panels-20', threshold: { panels: 20 }, text: ['20 солнечных панелей. Настало время рассказать о погоде. В зависимости о погодных условий одна панель приносит примерно от 0,3⚡/сек в дождь, до 1⚡/сек в ясную погоду. Нужно учитывать это при постройке роботов. Небо затянется тучами - питания не хватит и роботы отключатся.'] },
     { id: 'trees-3', threshold: { trees: 3 }, text: ['Зарядные станции позволяют строить новых роботов. ⚠️ Не стройте зарядную станцию, если не добываете 8⚡ в секунду. Вашим роботам не хватит энергии и они отключатся, а их сознание сотрется. Это для них равносильно смерти 💀. '] },
     { id: 'trees-4', threshold: { trees: 4 }, text: ['Каждая зарядная станция позволит собрать двух роботов. Каждый будет потреблять 4⚡ в секунду. Если ваши панели уже вырабатывают 8⚡ то это то, что вам нужно.'] },
     { id: 'chargingStations-1', threshold: { chargingStations: 1 }, text: ['Площадка для зарядки - маленький домик, где мы сможем собрать из обломков двух роботов, которые будут помогать. Как только вы построили площадку, начинается сборка роботов. Следите, чтобы роботам хватало питания, по 4⚡ каждому! Это очень важно.'] },
@@ -483,6 +482,7 @@ function loadGame() {
         robotProgress = data.robotProgress || 0;
         lastUpdate = data.lastUpdate || Date.now();
         treeButtonUnlocked = data.treeButtonUnlocked || false;
+        labUnlocked = false; // сброс разблокировки лаборатории при загрузке
         freeRobots = data.freeRobots || 0;
         lumberjackRobots = data.lumberjackRobots || 0;
         laboratories = data.laboratories || 0;
@@ -583,10 +583,19 @@ if (weatherInfoElem) {
         forecastTextElem.textContent = `Будет ${displayName.toLowerCase()} в ${h}:${m}`;
     }
 
-    const laboratoryContainer = document.getElementById('laboratory-container');
-    if (laboratoryContainer) {
-        laboratoryContainer.style.display = trees >= 10 ? 'flex' : 'none';
+// Блок отображения и обновления лабораторий – заменить полностью
+const laboratoryContainer = document.getElementById('laboratory-container');
+if (laboratoryContainer) {
+    // Если срублено >=10 деревьев, разблокируем лабораторию
+    if (!labUnlocked && trees >= 10) {
+        labUnlocked = true;
     }
+    // После разблокировки всегда показываем контейнер
+    if (labUnlocked) {
+        laboratoryContainer.style.display = 'flex';
+    }
+}
+
 
     const laboratoriesCountElem = document.getElementById('laboratories-count');
     const laboratoryCostElem = document.getElementById('laboratory-cost');
@@ -598,13 +607,12 @@ if (weatherInfoElem) {
         laboratoryCostElem.textContent = getNextLaboratoryCost();
     }
     if (labKnowledgeBonusElem) {
-        labKnowledgeBonusElem.textContent = laboratories === 0 ? '500' : '250';
+        labKnowledgeBonusElem.textContent = laboratories === 0 ? FIRST_LAB_CAPACITY.toString() : ADDITIONAL_LAB_CAPACITY.toString();
     }
 
     const knowledgeNavBtn = document.getElementById('knowledge-nav-btn');
     const robotsNavBtn = document.getElementById('robots-nav-btn');
     const weatherNavBtn = document.getElementById('weather-nav-btn');
-    
     if (knowledgeNavBtn) {
         knowledgeNavBtn.style.display = laboratories > 0 ? 'flex' : 'none';
     }
@@ -615,6 +623,7 @@ if (weatherInfoElem) {
         weatherNavBtn.style.display = 'flex';
     }
 
+    // Блок отображения кнопки "Рубить дерево"
     if (treeBtn) {
         if (energy >= 30) {
             treeButtonUnlocked = true;
@@ -622,6 +631,7 @@ if (weatherInfoElem) {
         treeBtn.style.display = treeButtonUnlocked ? 'flex' : 'none';
     }
 
+    // Блок отображения зарядных станций
     const stationContainer = document.getElementById('charging-station-container');
     if (stationContainer) {
         stationContainer.style.display = trees >= 3 ? 'flex' : 'none';
@@ -636,6 +646,7 @@ if (weatherInfoElem) {
         stationCostSpan.textContent = getNextStationCost();
     }
 
+    // Обновление счётчика роботов
     if (robotsCountElem) {
         robotsCountElem.textContent = Math.floor(robots);
     }
@@ -643,6 +654,7 @@ if (weatherInfoElem) {
         maxRobotsElem.textContent = ` / ${getMaxRobots()}`;
     }
 
+    // Прогресс сборки робота
     if (robProgCont) {
         if (chargingStations > 0 && robots < getMaxRobots()) {
             robProgCont.classList.remove('hidden');
@@ -651,6 +663,7 @@ if (weatherInfoElem) {
         }
     }
 }
+
 
 // === ОСНОВНОЙ ЦИКЛ ===
 function gameLoop() {
