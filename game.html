@@ -154,12 +154,41 @@
             </div>
         </div>
     </div>
-    <br>
-    <br>
+
+    <!-- БЛОК ИССЛЕДОВАНИЯ МЕТЕОРОЛОГИЯ -->
+    <div id="research-meteorology" class="building-item" style="display: none;">
+        <div class="building-content">
+            <span class="building-icon">🌦️</span>
+            <div class="building-info">
+                <div class="building-name">Метеорология</div>
+                <div class="building-stats">Изучение погодных условий</div>
+                <div class="building-desc">
+                    Позволит прогнозировать погоду и оптимизировать работу солнечных панелей.
+                    Стоимость: <span class="cost">30 📚</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Кнопка запуска исследования -->
+        <button id="meteorology-start-btn" class="nav-button" style="display: none;">
+            Начать исследование
+        </button>
+        
+        <!-- Прогресс-бар исследования -->
+        <div id="meteorology-progress-container" class="progress-container" style="display: none;">
+            <div class="progress-text">Исследование в процессе...</div>
+            <div class="progress-bar">
+                <div id="meteorology-progress-fill" class="progress-fill" style="width: 0%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <br><br>
     <div class="nav-buttons">
         <button id="back-button" class="nav-button">🔙 Назад</button>
     </div>
 </div>
+
 
 
 
