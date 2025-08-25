@@ -77,7 +77,7 @@ const WEATHER_PRODUCTION_RATES = {
 };
 
 const MIN_WEATHER_DURATION = 1 * 60 * 60;
-const MAX_WEATHER_DURATION = 6 * 60 * 60;
+const MAX_WEATHER_DURATION = 2 * 60 * 60;
 
 // === ИГРОВЫЕ ПЕРЕМЕННЫЕ ===
 let energy = 0;
@@ -248,8 +248,8 @@ function changeWeather() {
 function generateForecast() {
     const options = Object.values(WEATHER_TYPES).filter(w => w !== currentWeather);
     const nextWeather = options[Math.floor(Math.random() * options.length)];
-    const intervalSec = weatherTimeRemaining + generateRandomWeatherDuration();
-    forecastChangeTime = Date.now() + intervalSec * 1000;
+    // Прогноз на основе оставшегося времени
+    forecastChangeTime = Date.now() + weatherTimeRemaining * 1000;
     forecastWeather = nextWeather;
 
     const saved = JSON.parse(localStorage.getItem('minirobots-save') || '{}');
@@ -258,12 +258,8 @@ function generateForecast() {
     localStorage.setItem('minirobots-save', JSON.stringify(saved));
 }
 
-function formatTimeRemaining(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${hours}ч ${minutes}м ${secs}с`;
-}
+
+
 
 // === ФУНКЦИИ НАВИГАЦИИ ===
 function showPanel(panelName) {
@@ -792,7 +788,7 @@ if (panelBtn) {
             updateUI();
             checkAssistant();
         } else {
-            alert('Недостаточно энергии для панели!');
+            //alert('Недостаточно энергии для панели!');
         }
     };
 }
@@ -808,7 +804,7 @@ if (treeBtn) {
             updateUI();
             checkAssistant();
         } else {
-            alert('Недостаточно энергии для дерева!');
+            //alert('Недостаточно энергии для дерева!');
         }
     };
 }
@@ -826,7 +822,7 @@ if (stationBuildBtn) {
             updateUI();
             checkAssistant();
         } else {
-            alert('Недостаточно дерева для станции!');
+            //alert('Недостаточно дерева для станции!');
         }
     };
 }
@@ -844,7 +840,7 @@ if (laboratoryBtn) {
             updateUI();
             checkAssistant();
         } else {
-            alert('Недостаточно дерева для лаборатории!');
+            //alert('Недостаточно дерева для лаборатории!');
         }
     };
 }
