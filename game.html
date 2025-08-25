@@ -51,7 +51,7 @@
         <span class="nav-icon">🤖</span><span class="nav-text">Роботы</span>
     </a>
             <button id="knowledge-nav-btn" class="nav-button">
-                <span class="nav-icon">📚</span><span class="nav-text">Знания</span>
+                <span class="nav-icon">📚</span><span class="nav-text">Открытия</span>
             </button>
             <button id="weather-nav-btn" class="nav-button">
                 <span class="nav-icon">⛅️</span><span class="nav-text">Погода</span>
@@ -133,42 +133,38 @@
             </div>
         </div>
 
-        <div id="knowledge-panel" class="panel hidden">
-            <div class="resources-panel">
-                <div class="resource-item">
-                    <span class="resource-icon">📚</span>
-                    <div class="resource-info">
-                        <span class="resource-label">Исследования:</span>
-                        <span class="resource-value">Здесь будут исследования</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-       <div id="weather-panel" class="panel hidden">
-    Погода: <span id="weather-info">Загрузка...</span>
+<!-- Секция “Погода” -->
+<div id="weather-panel" class="panel hidden">
+    Погода: <span id="weather-info">Загрузка...</span><br>
+    Прогноз погоды: <span id="weather-forecast-text">Загрузка...</span><br>
     <br>
-    Прогноз погоды: <span id="weather-forecast-text">Загрузка...</span>
-
-<br><br>
-<button id="back-button" class="nav-button">
-  <span class="nav-text">🔙 Назад</span>
-</button>
-
-
-
-<br>
+    <div class="footer">
+        <button id="back-button" class="nav-button">🔙 Назад</button>
+    </div>
 </div>
-</span>
-  </button>
 
-</div> 
-
-
-
-                </div>
+<!-- Секция “Открытия” -->
+<div id="knowledge-panel" class="panel hidden">
+    <div class="resources-panel">
+        <div class="resource-item">
+            <span class="resource-icon">📚</span>
+            <div class="resource-info">
+                <span class="resource-label">Открытия:</span>
+                <span class="resource-value">Здесь будут новые открытия</span>
             </div>
         </div>
+    </div>
+    <br>
+    <br>
+    <div class="nav-buttons">
+        <button id="back-button" class="nav-button">🔙 Назад</button>
+    </div>
+</div>
+
+
+
+
+
 
         <div class="exit-container">
             <button id="btn-exit" class="exit-btn">Сохранить и выйти</button>
