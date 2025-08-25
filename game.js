@@ -238,11 +238,17 @@ function generateRandomWeatherDuration() {
 }
 
 function changeWeather() {
-    const weatherOptions = Object.values(WEATHER_TYPES);
-    const availableWeathers = weatherOptions.filter(w => w !== currentWeather);
-    currentWeather = availableWeathers[Math.floor(Math.random() * availableWeathers.length)];
-    weatherTimeRemaining = generateRandomWeatherDuration();
+// Если есть прогноз - используем его, иначе случайный выбор
+if (forecastWeather) {
+currentWeather = forecastWeather;
+} else {
+const weatherOptions = Object.values(WEATHER_TYPES);
+const availableWeathers = weatherOptions.filter(w => w !== currentWeather);
+currentWeather = availableWeathers[Math.floor(Math.random() * availableWeathers.length)];
 }
+weatherTimeRemaining = generateRandomWeatherDuration();
+}
+
 
 // === ФУНКЦИЯ ГЕНЕРАЦИИ ПРОГНОЗА ===
 function generateForecast() {
@@ -457,6 +463,15 @@ function loadGame() {
     scientistRobots = 0;
     maxKnowledge = 0;
     if (!savedData) {
+  labUnlocked = false;
+  const laboratoryContainer = document.getElementById('laboratory-container');
+if (laboratoryContainer) {
+  if (!labUnlocked && trees >= 10) {
+    labUnlocked = true;
+  }
+  laboratoryContainer.style.display = labUnlocked ? 'flex' : 'none';
+}
+
     // ...инициализация всех игровых переменных...
     // Случайная начальная погода
     const weatherOptions = Object.values(WEATHER_TYPES);
@@ -669,9 +684,12 @@ function gameLoop() {
 
     weatherTimeRemaining -= delta;
     if (weatherTimeRemaining <= 0) {
-        changeWeather();
-        generateForecast();
-    }
+changeWeather();
+// Очищаем использованный прогноз
+forecastWeather = null;
+forecastChangeTime = null;
+generateForecast();
+}
 
     const totalProduction = panels * getCurrentPanelProduction();
     const robotConsumption = robots * 4;
