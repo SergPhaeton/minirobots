@@ -37,8 +37,10 @@ try {
 researchStatus = { meteorology: 'closed' };
 researchStartTime = { meteorology: null };
 meteorologyCompleted = false;
+labUnlocked = false; // Сброс разблокировки лаборатории
 localStorage.removeItem('minirobots-save');
 localStorage.removeItem('shownAssistant');
+localStorage.removeItem('readAssistant'); // Добавляем сброс прочитанных сообщений
 window.location.reload();
 } catch (error) {
 console.error('Ошибка при сбросе игры:', error);
@@ -55,6 +57,7 @@ resetGame();
 }
 
 // === КОНСТАНТЫ ИГРЫ ===
+
 const MAX_ENERGY = 5000;
 const PANEL_PRODUCTION = 0.63;
 const PRICE_RATIO = 1.12;
@@ -72,6 +75,7 @@ const FIRST_LAB_CAPACITY = 500;
 const ADDITIONAL_LAB_CAPACITY = 250;
 
 // === КОНСТАНТЫ ПОГОДЫ ===
+
 const WEATHER_TYPES = {
 SUNNY: 'sunny',
 CLOUDY: 'cloudy',
@@ -88,6 +92,7 @@ const MIN_WEATHER_DURATION = 1 * 60 * 60;
 const MAX_WEATHER_DURATION = 2 * 60 * 60;
 
 // === КОНСТАНТЫ ИССЛЕДОВАНИЙ ===
+
 const RESEARCH_STATUS = {
 CLOSED: 'closed',
 AVAILABLE: 'available',
@@ -104,6 +109,7 @@ duration: 60 * 60 * 1000 // 60 минут в миллисекундах
 };
 
 // === ИГРОВЫЕ ПЕРЕМЕННЫЕ ===
+
 let energy = 0;
 let panels = 1;
 let trees = 0;
@@ -121,6 +127,7 @@ let maxKnowledge = 0;
 let scientistRobots = 0;
 
 // === ПЕРЕМЕННЫЕ ИССЛЕДОВАНИЙ ===
+
 let researchStatus = {
 meteorology: 'closed'
 };
@@ -130,15 +137,18 @@ meteorology: null
 let meteorologyCompleted = false;
 
 // === ПЕРЕМЕННЫЕ ПОГОДЫ ===
+
 let currentWeather = WEATHER_TYPES.SUNNY;
 let weatherTimeRemaining = 0;
 let forecastWeather = null;
 let forecastChangeTime = null;
 
 // === ПЕРЕМЕННЫЕ НАВИГАЦИИ ===
+
 let currentPanel = 'main';
 
 // === DOM ЭЛЕМЕНТЫ ===
+
 const energyTextElem = document.getElementById('energy-text');
 const panelsCountElem = document.getElementById('panels-count');
 const panelCostElem = document.getElementById('panel-cost');
@@ -195,13 +205,11 @@ if (researchStatus.meteorology === RESEARCH_STATUS.INPROCESS &&
 researchStartTime.meteorology !== null) {
 const elapsed = Date.now() - researchStartTime.meteorology;
 const progress = elapsed / RESEARCH_REQUIREMENTS.meteorology.duration;
-
 // Обновляем прогресс-бар
 const progressBar = document.getElementById('meteorology-progress-fill');
 if (progressBar) {
 progressBar.style.width = `${Math.min(progress * 100, 100)}%`;
 }
-
 // Проверяем завершение
 if (progress >= 1.0) {
 completeResearch('meteorology');
@@ -284,7 +292,7 @@ const assistantMessages = [
 { id: 'energy-10', threshold: { energy: 10 }, text: ['Вы можете собрать из обломков еще одну солнечную панель. Нажмите кнопку ☀️ ниже. Зарядка пойдет быстрее.'] },
 { id: 'energy-20', threshold: { energy: 100 }, text: ['Чем больше панелей из обломков вы собрали, тем сложнее находить новые запчасти. Тем больше энергии вы тратите на то, чтобы построить еще одну солнечную панель. В конце концов это все окупится стократно.'] },
 { id: 'energy-30', threshold: { energy: 30 }, text: ['Поблизости есть лес. Теперь, если вы будете достаточно заряжены - можете рубить дерево. Оно потребуется нам в дальнейшем.'] },
-{ id: 'panels-20', threshold: { panels: 20 }, text: ['20 солнечных панелей. Настало время рассказать о погоде. В зависимости от погодных условий одна панель приносит примерно от 0,3⚡/сек в дождь, до 1⚡/сек в ясную погоду. Нужно учитывать это при постройке роботов. Небо затянется тучами - питания не хватит и роботы отключатся.'] },
+{ id: 'panels-20', threshold: { panels: 20 }, text: ['20 солнечных панелей. Одна панель приносит примерно от 0,3 до 1 энергии в секунду. Это число случайно меняется, так как солнце иногда затягивается тучами.'] },
 { id: 'trees-3', threshold: { trees: 3 }, text: ['Зарядные станции позволяют строить новых роботов. ⚠️ Не стройте зарядную станцию, если не добываете 8⚡ в секунду. Вашим роботам не хватит энергии и они отключатся, а их сознание сотрется. Это для них равносильно смерти 💀. '] },
 { id: 'trees-4', threshold: { trees: 4 }, text: ['Каждая зарядная станция позволит собрать двух роботов. Каждый будет потреблять 4⚡ в секунду. Если ваши панели уже вырабатывают 8⚡ то это то, что вам нужно.'] },
 { id: 'chargingStations-1', threshold: { chargingStations: 1 }, text: ['Площадка для зарядки - маленький домик, где мы сможем собрать из обломков двух роботов, которые будут помогать. Как только вы построили площадку, начинается сборка роботов. Следите, чтобы роботам хватало питания, по 4⚡ каждому! Это очень важно.'] },
@@ -296,71 +304,175 @@ const assistantMessages = [
 { id: 'knowledge-50', threshold: { knowledge: 50 }, text: ['Ваши учёные накапливают знания! Знания - это основа для будущих технологических открытий. Продолжайте строить лаборатории и назначать учёных для ускорения исследований.'] }
 ];
 
-const assistantQueue = [];
-let assistantBusy = false;
+// Переменные для новой системы помощника
+let unreadMessages = []; // Очередь непрочитанных сообщений
+let currentMessage = null; // Текущее отображаемое сообщение
+let isShowingMessage = false; // Показывается ли сейчас текст сообщения
 
+// Проверяем и добавляем новые сообщения в очередь
 function checkAssistant() {
-const shown = JSON.parse(localStorage.getItem('shownAssistant') || '[]');
+const readMessages = JSON.parse(localStorage.getItem('readAssistant') || '[]');
 const ctx = { panels, trees, energy, chargingStations, robots, laboratories, knowledge };
-const nextMsg = assistantMessages.find(msg =>
-!shown.includes(msg.id) &&
+
+const newMessages = assistantMessages.filter(msg =>
+!readMessages.includes(msg.id) &&
+!unreadMessages.find(unread => unread.id === msg.id) &&
 Object.entries(msg.threshold).every(([key, val]) => ctx[key] >= val)
 );
-if (nextMsg) {
-shown.push(nextMsg.id);
-localStorage.setItem('shownAssistant', JSON.stringify(shown));
-enqueueAssistant(nextMsg.text);
-}
-}
 
-function enqueueAssistant(lines) {
-if (!Array.isArray(lines)) return;
-lines.forEach(line => assistantQueue.push(line));
-if (!assistantBusy) processAssistantQueue();
-}
-
-async function processAssistantQueue() {
-if (assistantBusy) return;
-const nextLine = assistantQueue.shift();
-if (nextLine === undefined) return;
-assistantBusy = true;
-try {
-await new Promise(resolve => {
-showAssistant([nextLine]);
-const textElem = document.getElementById('assistant-text');
-if (textElem) {
-const observer = new MutationObserver((_, obs) => {
-if (!textElem.textContent.endsWith('_')) {
-obs.disconnect();
-resolve();
-}
+// Добавляем новые сообщения в очередь
+newMessages.forEach(msg => {
+unreadMessages.push(msg);
 });
-observer.observe(textElem, { childList: true, characterData: true, subtree: true });
+
+updateAssistantUI();
+}
+
+// Обновляет отображение конверта/панели помощника
+function updateAssistantUI() {
+const envelopePanel = document.getElementById('assistant-envelope');
+const messagePanel = document.getElementById('assistant-panel');
+
+if (!envelopePanel) {
+// Создаем элемент конверта, если его нет
+createEnvelopeElement();
+return;
+}
+
+// Если показывается текст сообщения, скрываем конверт
+if (isShowingMessage) {
+envelopePanel.classList.add('hidden');
+return;
+}
+
+// Если есть непрочитанные сообщения, показываем конверт
+if (unreadMessages.length > 0) {
+envelopePanel.classList.remove('hidden');
 } else {
-resolve();
+envelopePanel.classList.add('hidden');
 }
-});
-} finally {
-assistantBusy = false;
-if (assistantQueue.length > 0) {
-processAssistantQueue();
-}
+
+// Всегда скрываем панель сообщения, если не показываем текст
+if (!isShowingMessage && messagePanel) {
+messagePanel.classList.add('hidden');
 }
 }
 
+// Создает элемент конверта
+function createEnvelopeElement() {
+// Создаем элемент конверта программно
+const envelope = document.createElement('div');
+envelope.id = 'assistant-envelope';
+envelope.className = 'assistant-envelope hidden';
+envelope.innerHTML = '📩';
+envelope.style.cssText = `
+position: fixed;
+top: 20px;
+right: 20px;
+width: 60px;
+height: 60px;
+background: #4a90e2;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 24px;
+cursor: pointer;
+box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+z-index: 1000;
+`;
+
+// Обработчик клика по конверту
+envelope.addEventListener('click', openMessage);
+
+// Добавляем в документ
+document.body.appendChild(envelope);
+
+// Обновляем отображение
+updateAssistantUI();
+}
+
+// Открывает первое сообщение из очереди
+function openMessage() {
+if (unreadMessages.length === 0) return;
+
+const message = unreadMessages[0]; // Берем первое сообщение
+currentMessage = message;
+isShowingMessage = true;
+
+// Скрываем конверт и показываем панель с сообщением
+updateAssistantUI();
+showAssistant(message.text);
+}
+
+// Показывает панель помощника с текстом
 function showAssistant(lines) {
 const panel = document.getElementById('assistant-panel');
 const text = document.getElementById('assistant-text');
+
 if (panel && text) {
 panel.classList.remove('hidden');
 typeAssistant(lines, text, 54);
-panel.onclick = function () {
-panel.classList.add('hidden');
-text.textContent = '';
+
+// Новый обработчик кликов по панели
+panel.onclick = function(event) {
+// Проверяем, кликнули ли по тексту или мимо него
+const textRect = text.getBoundingClientRect();
+const clickX = event.clientX;
+const clickY = event.clientY;
+
+const clickedOnText = (
+clickX >= textRect.left &&
+clickX <= textRect.right &&
+clickY >= textRect.top &&
+clickY <= textRect.bottom &&
+text.textContent.length > 0
+);
+
+if (clickedOnText) {
+// Клик по тексту - сообщение прочитано
+markCurrentMessageAsRead();
+} else {
+// Клик мимо текста - сообщение остается непрочитанным
+closeMessagePanel();
+}
 };
 }
 }
 
+// Отмечает текущее сообщение как прочитанное
+function markCurrentMessageAsRead() {
+if (currentMessage) {
+// Сохраняем в localStorage
+const readMessages = JSON.parse(localStorage.getItem('readAssistant') || '[]');
+if (!readMessages.includes(currentMessage.id)) {
+readMessages.push(currentMessage.id);
+localStorage.setItem('readAssistant', JSON.stringify(readMessages));
+}
+
+// Убираем из очереди непрочитанных
+unreadMessages = unreadMessages.filter(msg => msg.id !== currentMessage.id);
+}
+
+closeMessagePanel();
+}
+
+// Закрывает панель сообщения
+function closeMessagePanel() {
+const panel = document.getElementById('assistant-panel');
+const text = document.getElementById('assistant-text');
+
+if (panel) panel.classList.add('hidden');
+if (text) text.textContent = '';
+
+currentMessage = null;
+isShowingMessage = false;
+
+// Обновляем отображение (может показать конверт, если есть еще сообщения)
+updateAssistantUI();
+}
+
+// Функция печатания текста (без изменений)
 function typeAssistant(lines, elem, speed = 50, callback) {
 let i = 0;
 function nextLine() {
@@ -368,6 +480,7 @@ if (i >= lines.length) {
 if (callback) callback();
 return;
 }
+
 const line = lines[i++] || '';
 let pos = 0;
 elem.textContent = '';
@@ -470,7 +583,6 @@ researchStatus = { meteorology: 'closed' };
 researchStartTime = { meteorology: null };
 meteorologyCompleted = false;
 labUnlocked = false;
-
 // Случайная начальная погода
 const weatherOptions = Object.values(WEATHER_TYPES);
 currentWeather = weatherOptions[Math.floor(Math.random() * weatherOptions.length)];
@@ -597,15 +709,17 @@ const displayName = getWeatherDisplayName(forecastWeather);
 forecastTextElem.textContent = `Будет ${displayName.toLowerCase()} в ${h}:${m}`;
 }
 
-// Блок отображения и обновления лабораторий – заменить полностью
+// Блок отображения и обновления лабораторий – заменён полностью
 const laboratoryContainer = document.getElementById('laboratory-container');
 if (laboratoryContainer) {
-// Если срублено >=10 деревьев, разблокируем лабораторию
-if (!labUnlocked && trees >= 10) {
+// Скрываем контейнер до выполнения условия
+laboratoryContainer.style.display = 'none';
+// Разблокируем лабораторию при достижении порога деревьев
+if (trees >= 10) {
 labUnlocked = true;
 }
 
-// После разблокировки всегда показываем контейнер
+// Показываем контейнер, только если переменная labUnlocked = true
 if (labUnlocked) {
 laboratoryContainer.style.display = 'flex';
 }
@@ -614,7 +728,6 @@ laboratoryContainer.style.display = 'flex';
 const laboratoriesCountElem = document.getElementById('laboratories-count');
 const laboratoryCostElem = document.getElementById('laboratory-cost');
 const labKnowledgeBonusElem = document.getElementById('lab-knowledge-bonus');
-
 if (laboratoriesCountElem) {
 laboratoriesCountElem.textContent = laboratories;
 }
@@ -663,7 +776,6 @@ stationContainer.style.display = trees >= 3 ? 'flex' : 'none';
 
 const stationsCountSpan = document.getElementById('stations-count');
 const stationCostSpan = document.getElementById('station-cost');
-
 if (stationsCountSpan) {
 stationsCountSpan.textContent = chargingStations;
 }
@@ -693,7 +805,6 @@ robProgCont.classList.add('hidden');
 // === ЛОГИКА ИССЛЕДОВАНИЙ В updateUI ===
 // Проверяем доступность исследований
 checkResearchAvailability();
-
 // Управляем отображением исследования "Метеорология"
 const meteorologyResearch = document.getElementById('research-meteorology');
 if (meteorologyResearch) {
@@ -702,7 +813,6 @@ meteorologyResearch.style.display = 'flex';
 // Управляем кнопкой запуска исследования
 const startBtn = document.getElementById('meteorology-start-btn');
 const progressContainer = document.getElementById('meteorology-progress-container');
-
 if (researchStatus.meteorology === RESEARCH_STATUS.AVAILABLE && startBtn) {
 startBtn.style.display = 'block';
 if (progressContainer) progressContainer.style.display = 'none';
@@ -829,7 +939,6 @@ requestAnimationFrame(gameLoop);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-
 // вешаем общий обработчик на все кнопки «Назад»
 weatherBackBtns.forEach(btn => {
 btn.addEventListener('click', () => {
@@ -839,6 +948,7 @@ window.location.reload();
 });
 
 // === МЕНЮ СНОСА ===
+
 const demolishMenu = document.getElementById('demolish-menu');
 let currentDemolishType = null;
 
@@ -872,7 +982,6 @@ left = window.innerWidth - menuWidth - padding;
 if (top + menuHeight > window.innerHeight + window.scrollY) {
 top = window.innerHeight + window.scrollY - menuHeight - padding;
 }
-
 if (top < padding) top = padding;
 
 demolishMenu.style.top = `${top}px`;
@@ -936,9 +1045,11 @@ hideDemolishMenu();
 }
 });
 
-// === ЗАПУСК ИГРЫ ===
-loadGame();
+});
 
+// === ЗАПУСК ИГРЫ ===
+
+loadGame();
 // Если прогноз не загружен — генерируем новый
 if (!forecastWeather || !forecastChangeTime) {
 generateForecast();
@@ -1047,9 +1158,17 @@ weatherNavBtn.onclick = () => showPanel('weather');
 
 if (btnExit) {
 btnExit.onclick = () => {
+console.log('Кнопка выхода нажата'); // для отладки
 saveGame();
+try {
+window.location.href = 'index.html';
+} catch (error) {
+console.error('Ошибка перехода:', error);
 alert('Игра сохранена!');
+}
 };
+} else {
+console.error('Кнопка btnExit не найдена');
 }
 
 // === ОБРАБОТЧИКИ СОБЫТИЙ ДЛЯ СИСТЕМЫ ИССЛЕДОВАНИЙ ===
@@ -1062,5 +1181,3 @@ startResearch('meteorology');
 tick(); // звуковой эффект
 });
 }
-
-});
