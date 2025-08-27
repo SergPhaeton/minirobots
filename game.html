@@ -1,4 +1,3 @@
-﻿
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -47,10 +46,10 @@
             </div>
         </div>
 
-       <div class="nav-buttons">
-    <a href="robots.html" id="robots-nav-btn" class="nav-button">
-        <span class="nav-icon">🤖</span><span class="nav-text">Роботы</span>
-    </a>
+        <div class="nav-buttons">
+            <a href="robots.html" id="robots-nav-btn" class="nav-button">
+                <span class="nav-icon">🤖</span><span class="nav-text">Роботы</span>
+            </a>
             <button id="knowledge-nav-btn" class="nav-button">
                 <span class="nav-icon">📚</span><span class="nav-text">Открытия</span>
             </button>
@@ -60,67 +59,81 @@
         </div>
 
         <div id="main-panel">
-  <div class="buildings-panel">
-    <div id="panel-btn" class="building-item">
-      <div class="building-content">
-        <span class="building-icon">☀️</span>
-        <div class="building-info">
-          <div class="building-name">Солн. панель</div>
-          <div class="building-stats"><span id="panels-count">1</span> шт.</div>
-          <div class="building-desc">
-            Производит <span id="panel-production" class="highlight">0.63</span>/сек.
-            Стоимость: <span id="panel-cost" class="cost">10</span>⚡
-          </div>
+            <div class="buildings-panel">
+                <div id="panel-btn" class="building-item">
+                    <div class="building-content">
+                        <span class="building-icon">☀️</span>
+                        <div class="building-info">
+                            <div class="building-name">Солн. панель</div>
+                            <div class="building-stats"><span id="panels-count">1</span> шт.</div>
+                            <div class="building-desc">
+                                Каждая производит <span id="panel-production" class="highlight">0.63</span>/сек.
+                                Стоимость: <span id="panel-cost" class="cost">10</span>⚡
+                            </div>
+                        </div>
+                    </div>
+                    <button class="demolish-btn" data-type="panel">❎</button>
+                </div>
+
+                <div id="warehouse-container" class="building-item" style="display: none;">
+                    <div id="warehouse-btn" class="building-content">
+                        <span class="building-icon">🏗️</span>
+                        <div class="building-info">
+                            <div class="building-name">Склад</div>
+                            <div class="building-stats"><span id="warehouses-count">0</span> шт.</div>
+                            <div class="building-desc">
+                                Увеличивает место для хранения ресурсов<br>
+                                Стоимость: <span id="warehouse-cost" class="cost">50</span>🌳
+                            </div>
+                        </div>
+                    </div>
+                    <button class="demolish-btn" data-type="warehouse">❎</button>
+                </div>
+
+                <div id="tree-btn" class="building-item">
+                    <div class="building-content">
+                        <span class="building-icon">🌳</span>
+                        <div class="building-info">
+                            <div class="building-name">Рубить дерево</div>
+                            <div class="building-desc">Стоимость: <span class="cost">100</span>⚡</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="charging-station-container" class="building-item">
+                    <div id="charging-station-btn" class="building-content">
+                        <span class="building-icon">🔋</span>
+                        <div class="building-info">
+                            <div class="building-name">Зарядная станция</div>
+                            <div class="building-stats"><span id="stations-count">0</span> шт.</div>
+                            <div class="building-desc">Позволяет собрать двух роботов.<br> Стоимость: <span id="station-cost" class="cost">5</span>🌳</div>
+                        </div>
+                    </div>
+                    <button class="demolish-btn" data-type="station">❎</button>
+                </div>
+
+                <div id="laboratory-container" class="building-item">
+                    <div id="laboratory-btn" class="building-content">
+                        <span class="building-icon">🧬</span>
+                        <div class="building-info">
+                            <div class="building-name">Лаборатория</div>
+                            <div class="building-stats"><span id="laboratories-count">0</span> шт.</div>
+                            <div class="building-desc">
+                                Прирост знаний: <span class="highlight">+10.00%</span><br>
+                                Макс. знаний: <span class="highlight">+<span id="lab-knowledge-bonus">500</span></span><br>
+                                Стоимость: <span id="laboratory-cost" class="cost">25</span>🌳
+                            </div>
+                        </div>
+                    </div>
+                    <button class="demolish-btn" data-type="laboratory">❎</button>
+                </div>
+            </div>
+
+            <div id="robot-progress-container" class="progress-container hidden">
+                <div class="progress-text">Восстанавливаем и подключаем робота...</div>
+                <div class="progress-bar"><div id="robot-progress-bar" class="progress-fill"></div></div>
+            </div>
         </div>
-      </div>
-      <button class="demolish-btn" data-type="panel">❎</button>
-    </div>
-
-    <div id="tree-btn" class="building-item">
-      <div class="building-content">
-        <span class="building-icon">🌳</span>
-        <div class="building-info">
-          <div class="building-name">Рубить дерево</div>
-          <div class="building-desc">Стоимость: <span class="cost">100</span>⚡</div>
-        </div>
-      </div>
-    </div>
-
-    <div id="charging-station-container" class="building-item">
-      <div id="charging-station-btn" class="building-content">
-        <span class="building-icon">🔋</span>
-        <div class="building-info">
-          <div class="building-name">Зарядная станция</div>
-          <div class="building-stats"><span id="stations-count">0</span> шт.</div>
-          <div class="building-desc">Стоимость: <span id="station-cost" class="cost">5</span>🌳</div>
-        </div>
-      </div>
-      <button class="demolish-btn" data-type="station">❎</button>
-    </div>
-
-    <div id="laboratory-container" class="building-item">
-      <div id="laboratory-btn" class="building-content">
-        <span class="building-icon">🧬</span>
-        <div class="building-info">
-          <div class="building-name">Лаборатория</div>
-          <div class="building-stats"><span id="laboratories-count">0</span> шт.</div>
-          <div class="building-desc">
-            Прирост знаний: <span class="highlight">+10.00%</span><br>
-            Макс. знаний: <span class="highlight">+<span id="lab-knowledge-bonus">500</span></span><br>
-            Стоимость: <span id="laboratory-cost" class="cost">25</span>🌳
-          </div>
-        </div>
-      </div>
-      <button class="demolish-btn" data-type="laboratory">❎</button>
-    </div>
-  </div>
-
-  <div id="robot-progress-container" class="progress-container hidden">
-    <div class="progress-text">Восстанавливаем и подключаем робота...</div>
-    <div class="progress-bar"><div id="robot-progress-bar" class="progress-fill"></div></div>
-  </div>
-</div>
-
 
         <div id="robots-panel" class="panel hidden">
             <div class="resources-panel">
@@ -134,67 +147,90 @@
             </div>
         </div>
 
-<!-- Секция “Погода” -->
-<div id="weather-panel" class="panel hidden">
-    Погода: <span id="weather-info">Загрузка...</span><br>
-    Прогноз погоды: <span id="weather-forecast-text">Загрузка...</span><br>
-    <br>
-    <div class="footer">
-        <button id="back-button" class="nav-button">🔙 Назад</button>
-    </div>
-</div>
-
-<!-- Секция “Открытия” -->
-<div id="knowledge-panel" class="panel hidden">
-    <div class="resources-panel">
-        <div class="resource-item">
-            <span class="resource-icon">📚</span>
-            <div class="resource-info">
-                <span class="resource-label">Открытия:</span>
-                <span class="resource-value">Здесь будут новые открытия</span>
+        <!-- Секция "Погода" -->
+        <div id="weather-panel" class="panel hidden">
+            Погода: <span id="weather-info">Загрузка...</span><br>
+            Прогноз погоды: <span id="weather-forecast-text">Загрузка...</span><br>
+            <br>
+            <div class="footer">
+                <button id="back-button" class="nav-button">🔙 Назад</button>
             </div>
         </div>
-    </div>
 
-    <!-- БЛОК ИССЛЕДОВАНИЯ МЕТЕОРОЛОГИЯ -->
-    <div id="research-meteorology" class="building-item" style="display: none;">
-        <div class="building-content">
-            <span class="building-icon">🌦️</span>
-            <div class="building-info">
-                <div class="building-name">Метеорология</div>
-                <div class="building-stats">Изучение погодных условий</div>
-                <div class="building-desc">
-                    Позволит прогнозировать погоду и оптимизировать работу солнечных панелей.
-                    Стоимость: <span class="cost">30 📚</span>
+        <!-- Секция "Открытия" -->
+        <div id="knowledge-panel" class="panel hidden">
+            <div class="resources-panel">
+                <div class="resource-item">
+                    <span class="resource-icon">📚</span>
+                    <div class="resource-info">
+                        <span class="resource-label">Открытия:</span>
+                        <span class="resource-value">Здесь будут новые открытия</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Кнопка запуска исследования -->
-        <button id="meteorology-start-btn" class="nav-button" style="display: none;">
-            Начать исследование
-        </button>
-        
-        <!-- Прогресс-бар исследования -->
-        <div id="meteorology-progress-container" class="progress-container" style="display: none;">
-            <div class="progress-text">Исследование в процессе...</div>
-            <div class="progress-bar">
-                <div id="meteorology-progress-fill" class="progress-fill" style="width: 0%;"></div>
+
+            <!-- БЛОК ИССЛЕДОВАНИЯ СКЛАД И СЕРВИС -->
+            <div id="research-warehouse-service" class="building-item" style="display:none;">
+                <div class="building-content">
+                    <span class="building-icon">🏗️</span>
+                    <div class="building-info">
+                        <div class="building-name">Склад и сервис</div>
+                        <div id="warehouse-service-status" class="building-stats">Система хранения ресурсов</div>
+                        <div class="building-desc">
+                            Позволит строить склады для увеличения объёма хранения ресурсов.<br>
+                            Стоимость: <span class="cost">100 📚</span><!-- Кнопка запуска исследования -->
+                <button id="warehouse-service-start-btn" class="nav-button" style="display: none;" onclick="startResearch('warehouseService'); tick();">
+    Начать исследование
+</button>
+
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <!-- Прогресс-бар исследования -->
+                <div id="warehouse-service-progress-container" class="progress-container" style="display: none;">
+                    <div class="progress-text">Исследование в процессе...</div>
+                    <div class="progress-bar">
+                        <div id="warehouse-service-progress-fill" class="progress-fill" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- БЛОК ИССЛЕДОВАНИЯ МЕТЕОРОЛОГИЯ -->
+            <div id="research-meteorology" class="building-item" style="display: none;">
+                <div class="building-content">
+                    <span class="building-icon">🌦️</span>
+                    <div class="building-info">
+                        <div class="building-name">Метеорология</div>
+                        <div id="meteorology-status" class="building-stats">Изучение погодных условий</div>
+                        <div class="building-desc">
+                            Позволит прогнозировать погоду и оптимизировать работу солнечных панелей.
+                            Стоимость: <span class="cost">30 📚</span> <!-- Кнопка запуска исследования -->
+                <button id="meteorology-start-btn" class="nav-button" style="display: none;">
+                    Начать исследование
+                </button>
+                        </div>
+                    </div>
+                </div>
+
+               
+
+                <!-- Прогресс-бар исследования -->
+                <div id="meteorology-progress-container" class="progress-container" style="display: none;">
+                    <div class="progress-text">Исследование в процессе...</div>
+                    <div class="progress-bar">
+                        <div id="meteorology-progress-fill" class="progress-fill" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <br><br>
+            <div class="nav-buttons">
+                <button id="back-button" class="nav-button">🔙 Назад</button>
             </div>
         </div>
-    </div>
-
-    <br><br>
-    <div class="nav-buttons">
-        <button id="back-button" class="nav-button">🔙 Назад</button>
-    </div>
-</div>
-
-
-
-
-
-
 
         <div class="exit-container">
             <button id="btn-exit" class="exit-btn">Сохранить и выйти</button>
@@ -217,11 +253,5 @@
     </div>
 
     <script src="game.js"></script>
-<script>
-  document.getElementById('back-button').addEventListener('click', () => {
-    location.reload();
-  });
-</script>
-
 </body>
 </html>
